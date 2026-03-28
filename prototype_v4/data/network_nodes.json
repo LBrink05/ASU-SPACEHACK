@@ -1259,7 +1259,7 @@
       "lat": 36.07,
       "lon": 120.38,
       "region": "asia",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 24.4
     },
     {
@@ -1269,7 +1269,7 @@
       "lat": 22.94,
       "lon": 113.58,
       "region": "asia",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 24.2
     },
     {
@@ -1279,7 +1279,7 @@
       "lat": 38.97,
       "lon": 117.73,
       "region": "asia",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 21.0
     },
     {
@@ -1289,7 +1289,7 @@
       "lat": 24.48,
       "lon": 118.08,
       "region": "asia",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 12.0
     },
     {
@@ -1299,7 +1299,7 @@
       "lat": 1.36,
       "lon": 103.55,
       "region": "asia",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 11.2
     },
     {
@@ -1309,7 +1309,7 @@
       "lat": 22.73,
       "lon": 69.72,
       "region": "asia",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 7.0
     },
     {
@@ -1319,7 +1319,7 @@
       "lat": 3.0,
       "lon": 101.39,
       "region": "asia",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 13.7
     },
     {
@@ -1329,7 +1329,7 @@
       "lat": 35.44,
       "lon": 139.64,
       "region": "asia",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 2.8
     },
     {
@@ -1339,7 +1339,7 @@
       "lat": 34.68,
       "lon": 135.19,
       "region": "asia",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 2.9
     },
     {
@@ -1349,7 +1349,7 @@
       "lat": 36.13,
       "lon": -5.44,
       "region": "europe",
-      "ets_scope": "eu_ets",
+      "ets_scope": true,
       "teu_millions": 5.1
     },
     {
@@ -1359,7 +1359,7 @@
       "lat": 38.43,
       "lon": 15.9,
       "region": "europe",
-      "ets_scope": "eu_ets",
+      "ets_scope": true,
       "teu_millions": 3.1
     },
     {
@@ -1369,7 +1369,7 @@
       "lat": 53.54,
       "lon": 8.58,
       "region": "europe",
-      "ets_scope": "eu_ets",
+      "ets_scope": true,
       "teu_millions": 5.0
     },
     {
@@ -1379,7 +1379,7 @@
       "lat": -6.83,
       "lon": 39.28,
       "region": "africa",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 0.8
     },
     {
@@ -1389,7 +1389,7 @@
       "lat": -25.97,
       "lon": 32.58,
       "region": "africa",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 0.4
     },
     {
@@ -1399,7 +1399,7 @@
       "lat": 16.94,
       "lon": 54.0,
       "region": "middle_east",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 3.7
     },
     {
@@ -1409,7 +1409,7 @@
       "lat": 24.81,
       "lon": 54.6,
       "region": "middle_east",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 2.0
     },
     {
@@ -1419,7 +1419,7 @@
       "lat": 22.31,
       "lon": 91.8,
       "region": "asia",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 3.1
     },
     {
@@ -1429,7 +1429,7 @@
       "lat": 6.94,
       "lon": 79.85,
       "region": "asia",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 7.2
     },
     {
@@ -1439,7 +1439,7 @@
       "lat": 11.59,
       "lon": 43.14,
       "region": "africa",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 1.0
     },
     {
@@ -1449,7 +1449,7 @@
       "lat": 5.3,
       "lon": -4.02,
       "region": "africa",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 0.9
     },
     {
@@ -1459,7 +1459,7 @@
       "lat": 6.35,
       "lon": 2.43,
       "region": "africa",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 0.5
     },
     {
@@ -1469,7 +1469,7 @@
       "lat": 5.62,
       "lon": -0.02,
       "region": "africa",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 1.0
     },
     {
@@ -1479,7 +1479,7 @@
       "lat": 25.01,
       "lon": 55.06,
       "region": "middle_east",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 14.8
     },
     {
@@ -1489,7 +1489,7 @@
       "lat": 33.75,
       "lon": -118.19,
       "region": "north_america",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 9.6
     },
     {
@@ -1499,7 +1499,7 @@
       "lat": 29.93,
       "lon": -90.03,
       "region": "north_america",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 0.6
     },
     {
@@ -1509,7 +1509,7 @@
       "lat": 32.78,
       "lon": -79.93,
       "region": "north_america",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 2.6
     },
     {
@@ -1519,7 +1519,7 @@
       "lat": 37.8,
       "lon": -122.3,
       "region": "north_america",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 2.5
     },
     {
@@ -1529,7 +1529,7 @@
       "lat": 47.27,
       "lon": -122.41,
       "region": "north_america",
-      "ets_scope": "none",
+      "ets_scope": false,
       "teu_millions": 3.5
     },
     {
@@ -1539,7 +1539,7 @@
       "lat": 37.46,
       "lon": 126.44,
       "region": "asia",
-      "ets_scope": "corsia"
+      "ets_scope": false
     },
     {
       "id": "al_maktoum_airport",
@@ -1548,7 +1548,7 @@
       "lat": 24.9,
       "lon": 55.16,
       "region": "middle_east",
-      "ets_scope": "corsia"
+      "ets_scope": false
     },
     {
       "id": "doha_airport",
@@ -1557,7 +1557,7 @@
       "lat": 25.27,
       "lon": 51.61,
       "region": "middle_east",
-      "ets_scope": "corsia"
+      "ets_scope": false
     },
     {
       "id": "louisville_airport",
@@ -1566,7 +1566,7 @@
       "lat": 38.17,
       "lon": -85.74,
       "region": "north_america",
-      "ets_scope": "corsia"
+      "ets_scope": false
     },
     {
       "id": "ohare_airport",
@@ -1575,7 +1575,7 @@
       "lat": 41.98,
       "lon": -87.9,
       "region": "north_america",
-      "ets_scope": "corsia"
+      "ets_scope": false
     },
     {
       "id": "anchorage_airport",
@@ -1584,7 +1584,7 @@
       "lat": 61.17,
       "lon": -150.0,
       "region": "north_america",
-      "ets_scope": "corsia"
+      "ets_scope": false
     },
     {
       "id": "mumbai_airport",
@@ -1593,7 +1593,7 @@
       "lat": 19.09,
       "lon": 72.87,
       "region": "asia",
-      "ets_scope": "corsia"
+      "ets_scope": false
     },
     {
       "id": "narita_airport",
@@ -1602,7 +1602,7 @@
       "lat": 35.77,
       "lon": 140.39,
       "region": "asia",
-      "ets_scope": "corsia"
+      "ets_scope": false
     },
     {
       "id": "changi_airport",
@@ -1611,7 +1611,7 @@
       "lat": 1.36,
       "lon": 103.99,
       "region": "asia",
-      "ets_scope": "corsia"
+      "ets_scope": false
     },
     {
       "id": "miami_airport",
@@ -1620,7 +1620,7 @@
       "lat": 25.8,
       "lon": -80.29,
       "region": "north_america",
-      "ets_scope": "corsia"
+      "ets_scope": false
     },
     {
       "id": "schiphol_airport",
@@ -1629,7 +1629,7 @@
       "lat": 52.31,
       "lon": 4.77,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "atlanta_airport",
@@ -1638,7 +1638,7 @@
       "lat": 33.64,
       "lon": -84.43,
       "region": "north_america",
-      "ets_scope": "corsia"
+      "ets_scope": false
     },
     {
       "id": "guangzhou_airport",
@@ -1647,7 +1647,7 @@
       "lat": 23.39,
       "lon": 113.3,
       "region": "asia",
-      "ets_scope": "corsia"
+      "ets_scope": false
     },
     {
       "id": "taipei_airport",
@@ -1656,7 +1656,7 @@
       "lat": 25.08,
       "lon": 121.23,
       "region": "asia",
-      "ets_scope": "corsia"
+      "ets_scope": false
     },
     {
       "id": "istanbul_airport",
@@ -1665,7 +1665,7 @@
       "lat": 41.26,
       "lon": 28.74,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "sao_paulo_airport",
@@ -1674,7 +1674,7 @@
       "lat": -23.43,
       "lon": -46.47,
       "region": "south_america",
-      "ets_scope": "corsia"
+      "ets_scope": false
     },
     {
       "id": "houston",
@@ -1683,7 +1683,7 @@
       "lat": 29.76,
       "lon": -95.37,
       "region": "north_america",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "san_francisco",
@@ -1692,7 +1692,7 @@
       "lat": 37.77,
       "lon": -122.42,
       "region": "north_america",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "denver",
@@ -1701,7 +1701,7 @@
       "lat": 39.74,
       "lon": -104.99,
       "region": "north_america",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "philadelphia",
@@ -1710,7 +1710,7 @@
       "lat": 39.95,
       "lon": -75.17,
       "region": "north_america",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "marseille",
@@ -1719,7 +1719,7 @@
       "lat": 43.3,
       "lon": 5.37,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "munich",
@@ -1728,7 +1728,7 @@
       "lat": 48.14,
       "lon": 11.58,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "zurich",
@@ -1737,7 +1737,7 @@
       "lat": 47.38,
       "lon": 8.54,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "taipei",
@@ -1746,7 +1746,7 @@
       "lat": 25.03,
       "lon": 121.57,
       "region": "asia",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "kuala_lumpur",
@@ -1755,7 +1755,7 @@
       "lat": 3.14,
       "lon": 101.69,
       "region": "asia",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "dhaka",
@@ -1764,7 +1764,7 @@
       "lat": 23.81,
       "lon": 90.41,
       "region": "asia",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "karachi",
@@ -1773,7 +1773,7 @@
       "lat": 24.86,
       "lon": 67.01,
       "region": "asia",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "muscat",
@@ -1782,7 +1782,7 @@
       "lat": 23.59,
       "lon": 58.54,
       "region": "middle_east",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "addis_ababa",
@@ -1791,7 +1791,7 @@
       "lat": 9.02,
       "lon": 38.75,
       "region": "africa",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "cape_town",
@@ -1800,7 +1800,7 @@
       "lat": -33.92,
       "lon": 18.42,
       "region": "africa",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "accra",
@@ -1809,7 +1809,7 @@
       "lat": 5.56,
       "lon": -0.19,
       "region": "africa",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "panama_city",
@@ -1818,7 +1818,7 @@
       "lat": 8.98,
       "lon": -79.52,
       "region": "south_america",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "havana",
@@ -1827,7 +1827,7 @@
       "lat": 23.11,
       "lon": -82.37,
       "region": "south_america",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "hanoi",
@@ -1836,7 +1836,7 @@
       "lat": 21.03,
       "lon": 105.85,
       "region": "asia",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "yangon",
@@ -1845,7 +1845,7 @@
       "lat": 16.87,
       "lon": 96.2,
       "region": "asia",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "colombo",
@@ -1854,7 +1854,7 @@
       "lat": 6.93,
       "lon": 79.84,
       "region": "asia",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "tehran",
@@ -1863,7 +1863,7 @@
       "lat": 35.69,
       "lon": 51.39,
       "region": "middle_east",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "jeddah",
@@ -1872,7 +1872,7 @@
       "lat": 21.49,
       "lon": 39.19,
       "region": "middle_east",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "barcelona",
@@ -1881,7 +1881,7 @@
       "lat": 41.39,
       "lon": 2.17,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "hamburg",
@@ -1890,7 +1890,7 @@
       "lat": 53.55,
       "lon": 10.0,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "antwerp",
@@ -1899,7 +1899,7 @@
       "lat": 51.22,
       "lon": 4.4,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "porto",
@@ -1908,7 +1908,7 @@
       "lat": 41.16,
       "lon": -8.63,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "dublin",
@@ -1917,7 +1917,7 @@
       "lat": 53.35,
       "lon": -6.26,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "helsinki",
@@ -1926,7 +1926,7 @@
       "lat": 60.17,
       "lon": 24.94,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "bucharest",
@@ -1935,7 +1935,7 @@
       "lat": 44.43,
       "lon": 26.1,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "bratislava",
@@ -1944,7 +1944,7 @@
       "lat": 48.15,
       "lon": 17.11,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "memphis_hub",
@@ -1953,7 +1953,7 @@
       "lat": 35.15,
       "lon": -90.05,
       "region": "north_america",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "chengdu_hub",
@@ -1962,7 +1962,7 @@
       "lat": 30.57,
       "lon": 104.07,
       "region": "asia",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "moscow_hub",
@@ -1971,7 +1971,7 @@
       "lat": 55.76,
       "lon": 37.62,
       "region": "europe",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "hamburg_hub",
@@ -1980,7 +1980,7 @@
       "lat": 53.55,
       "lon": 10.0,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "louisville_warehouse",
@@ -1989,7 +1989,7 @@
       "lat": 38.19,
       "lon": -85.68,
       "region": "north_america",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "singapore_warehouse",
@@ -1998,7 +1998,7 @@
       "lat": 1.33,
       "lon": 103.72,
       "region": "asia",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "dubai_warehouse",
@@ -2007,7 +2007,7 @@
       "lat": 24.92,
       "lon": 55.16,
       "region": "middle_east",
-      "ets_scope": "none"
+      "ets_scope": false
     },
     {
       "id": "amsterdam",
@@ -2016,7 +2016,7 @@
       "lat": 52.37,
       "lon": 4.9,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     },
     {
       "id": "budapest",
@@ -2025,7 +2025,7 @@
       "lat": 47.5,
       "lon": 19.04,
       "region": "europe",
-      "ets_scope": "eu_ets"
+      "ets_scope": true
     }
   ]
 }

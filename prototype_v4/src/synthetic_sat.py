@@ -64,6 +64,8 @@ def generate_synthetic_waypoints(waypoints, route, sample_every=4):
 
     Mimics the structure of gee_fetchers.enrich_waypoints() output.
     """
+    if sample_every < 1:
+        sample_every = 1
     results = []
 
     for i, wp in enumerate(waypoints):

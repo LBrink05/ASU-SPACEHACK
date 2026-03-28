@@ -309,10 +309,19 @@ async function findRoutes() {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(payload),
     });
+    if (!resp.ok) {
+      throw new Error(`Server error (${resp.status})`);
+    }
     const data = await resp.json();
 
     if (data.error) {
       errorMsg.textContent = data.error;
+      errorMsg.classList.remove('hidden');
+      return;
+    }
+
+    if (!data.routes || !Array.isArray(data.routes) || data.routes.length === 0) {
+      errorMsg.textContent = 'No routes found between those locations.';
       errorMsg.classList.remove('hidden');
       return;
     }
@@ -346,7 +355,7 @@ function renderRouteCards(routes) {
       `<span class="mode-tag" style="background:${MODE_COLORS[m]}">${MODE_LABELS[m]}</span>`
     ).join('');
 
-    const etsCost = r.ets ? `€${r.ets.total_ets_cost_eur.toLocaleString()}` : '—';
+    const etsCost = r.ets && r.ets.total_ets_cost_eur != null ? `€${r.ets.total_ets_cost_eur.toLocaleString()}` : '—';
 
     return `
       <div class="route-card ${i === 0 ? 'selected' : ''}" onclick="selectRoute(${i})">
@@ -580,7 +589,7 @@ function renderMap(routes) {
       zones.forEach(z => {
         const st = WARN_STYLE[z.icon] || WARN_STYLE.pollution;
         wLats.push(z.lat); wLons.push(z.lon);
-        wTexts.push(`⚠ ${z.label} (${z.severity})`);
+        wTexts.push(`${z.label} (${z.severity})`);
         wColors.push(st.color); wSymbols.push(st.symbol); wSizes.push(st.size);
       });
       traces.push({

@@ -91,9 +91,8 @@ def fetch_no2(wp):
     )
     if col.size().getInfo() == 0:
         return None
-    return col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo().get(
-        "NO2_column_number_density"
-    )
+    result = col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo()
+    return result.get("NO2_column_number_density") if result else None
 
 
 def fetch_sar(wp):
@@ -112,7 +111,8 @@ def fetch_sar(wp):
     )
     if col.size().getInfo() == 0:
         return None
-    return col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo().get("VV")
+    result = col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo()
+    return result.get("VV") if result else None
 
 
 def fetch_sst(wp):
@@ -130,7 +130,8 @@ def fetch_sst(wp):
     )
     if col.size().getInfo() == 0:
         return None
-    raw = col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo().get("sst")
+    result = col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo()
+    raw = result.get("sst") if result else None
     return raw * 0.01 if raw is not None else None
 
 
@@ -149,9 +150,8 @@ def fetch_co(wp):
     )
     if col.size().getInfo() == 0:
         return None
-    return col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo().get(
-        "CO_column_number_density"
-    )
+    result = col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo()
+    return result.get("CO_column_number_density") if result else None
 
 
 def enrich_waypoints(waypoints, sample_every=4):
@@ -162,6 +162,8 @@ def enrich_waypoints(waypoints, sample_every=4):
     """
     conn = _ensure_db()
     results = []
+    if sample_every < 1:
+        sample_every = 1
 
     for i, wp in enumerate(waypoints):
         enriched = dict(wp)

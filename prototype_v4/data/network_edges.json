@@ -4316,46 +4316,6 @@
       "compliance_score": 1
     },
     {
-      "from": "rotterdam_warehouse",
-      "to": "port_rotterdam",
-      "mode": "last_mile",
-      "distance_km": 8,
-      "transit_days": 0.1,
-      "cost_usd_per_tonne": 5,
-      "co2_g_per_tonne_km": 130,
-      "compliance_score": 0.77
-    },
-    {
-      "from": "port_rotterdam",
-      "to": "rotterdam_warehouse",
-      "mode": "last_mile",
-      "distance_km": 8,
-      "transit_days": 0.1,
-      "cost_usd_per_tonne": 5,
-      "co2_g_per_tonne_km": 130,
-      "compliance_score": 0.71
-    },
-    {
-      "from": "rotterdam_warehouse",
-      "to": "duisburg_hub",
-      "mode": "truck",
-      "distance_km": 220,
-      "transit_days": 0.1,
-      "cost_usd_per_tonne": 17.95,
-      "co2_g_per_tonne_km": 62,
-      "compliance_score": 0.85
-    },
-    {
-      "from": "duisburg_hub",
-      "to": "rotterdam_warehouse",
-      "mode": "truck",
-      "distance_km": 220,
-      "transit_days": 0.2,
-      "cost_usd_per_tonne": 21.23,
-      "co2_g_per_tonne_km": 62,
-      "compliance_score": 0.83
-    },
-    {
       "from": "port_ningbo",
       "to": "port_shanghai",
       "mode": "ocean",
@@ -4997,26 +4957,6 @@
     },
     {
       "from": "hong_kong_airport",
-      "to": "heathrow_airport",
-      "mode": "air",
-      "distance_km": 9600,
-      "transit_days": 0.6,
-      "cost_usd_per_tonne": 2136.96,
-      "co2_g_per_tonne_km": 500,
-      "compliance_score": 0.62
-    },
-    {
-      "from": "heathrow_airport",
-      "to": "hong_kong_airport",
-      "mode": "air",
-      "distance_km": 9600,
-      "transit_days": 0.6,
-      "cost_usd_per_tonne": 2807.04,
-      "co2_g_per_tonne_km": 500,
-      "compliance_score": 0.6
-    },
-    {
-      "from": "hong_kong_airport",
       "to": "frankfurt_airport",
       "mode": "air",
       "distance_km": 9100,
@@ -5094,26 +5034,6 @@
       "cost_usd_per_tonne": 2.47,
       "co2_g_per_tonne_km": 62,
       "compliance_score": 0.89
-    },
-    {
-      "from": "xian_hub",
-      "to": "duisburg_hub",
-      "mode": "rail",
-      "distance_km": 9000,
-      "transit_days": 14.0,
-      "cost_usd_per_tonne": 250.2,
-      "co2_g_per_tonne_km": 22,
-      "compliance_score": 1
-    },
-    {
-      "from": "duisburg_hub",
-      "to": "xian_hub",
-      "mode": "rail",
-      "distance_km": 9000,
-      "transit_days": 14.0,
-      "cost_usd_per_tonne": 242.1,
-      "co2_g_per_tonne_km": 22,
-      "compliance_score": 1
     },
     {
       "from": "doha",
