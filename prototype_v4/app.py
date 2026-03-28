@@ -8,7 +8,7 @@ import os
 import json
 from flask import Flask, render_template, request, jsonify
 
-from src import routing, gee_fetchers, waypoint_generator, ets_advisor
+from src import routing, gee_fetchers, waypoint_generator, ets_advisor, synthetic_sat
 
 app = Flask(__name__)
 
@@ -85,17 +85,40 @@ def api_routes():
     if origin == destination:
         return jsonify({"error": "Origin and destination cannot be the same.", "routes": []})
 
+    # Collect optional waypoints (up to 6 intermediate stops)
+    raw_waypoints = data.get("waypoints", [])
+    if not isinstance(raw_waypoints, list):
+        raw_waypoints = []
+    waypoints = [w.strip() for w in raw_waypoints if isinstance(w, str) and w.strip()]
+    if len(waypoints) > 6:
+        return jsonify({"error": "Maximum 6 intermediate stops allowed.", "routes": []})
+
+    # Build ordered stop list and check for consecutive duplicates
+    stops = [origin] + waypoints + [destination]
+    for i in range(len(stops) - 1):
+        if stops[i] == stops[i + 1]:
+            return jsonify({"error": f"Consecutive duplicate stop: {stops[i]}.", "routes": []})
+
     w_emissions = float(data.get("w_emissions", 0.35))
     w_cost = float(data.get("w_cost", 0.25))
     w_compliance = float(data.get("w_compliance", 0.25))
     w_time = float(data.get("w_time", 0.15))
-    fetch_satellite = data.get("fetch_satellite", True)
+    w_satellite = float(data.get("w_satellite", 0.0))
+    sat_mode = data.get("sat_mode", "offline")  # offline | online | synthetic
 
-    routes = routing.find_routes(
-        origin, destination, cargo_t,
-        w_emissions, w_cost, w_compliance, w_time,
-        k=3,
-    )
+    # Single-leg or multi-leg routing
+    if len(stops) == 2:
+        routes = routing.find_routes(
+            origin, destination, cargo_t,
+            w_emissions, w_cost, w_compliance, w_time,
+            k=3,
+        )
+    else:
+        routes = routing.find_multi_routes(
+            stops, cargo_t,
+            w_emissions, w_cost, w_compliance, w_time,
+            k=3,
+        )
 
     if not routes:
         return jsonify({"error": "No routes found between those nodes.", "routes": []})
@@ -117,19 +140,34 @@ def api_routes():
                 "waypoint_count": len(leg["waypoints"]),
             })
 
-        # Satellite data enrichment (if enabled)
-        if fetch_satellite and gee_fetchers.is_available():
+        # Satellite data enrichment (mode: offline | online | synthetic)
+        if sat_mode == "online" and gee_fetchers.is_available():
             enriched = gee_fetchers.enrich_waypoints(all_waypoints, sample_every=4)
-            route["satellite"] = gee_fetchers.satellite_summary(enriched)
+            route["satellite"] = gee_fetchers.satellite_summary(enriched, route=route)
+            route["satellite"]["sat_mode"] = "online"
+        elif sat_mode == "synthetic":
+            enriched = synthetic_sat.generate_synthetic_waypoints(
+                all_waypoints, route, sample_every=4
+            )
+            route["satellite"] = gee_fetchers.satellite_summary(enriched, route=route)
+            route["satellite"]["gee_available"] = True  # treat as available for UI
+            route["satellite"]["sat_mode"] = "synthetic"
         else:
             route["satellite"] = {
                 "gee_available": False,
+                "sat_mode": "offline",
                 "waypoints_sampled": 0,
                 "waypoints_total": len(all_waypoints),
                 "no2_mean": None, "no2_count": 0,
                 "sar_mean": None, "sar_count": 0,
                 "sst_mean": None, "sst_count": 0,
                 "co_mean": None, "co_count": 0,
+                "emissions_verification": None,
+                "sea_state": None,
+                "port_congestion": [],
+                "air_quality": None,
+                "satellite_risk_score": None,
+                "warning_zones": [],
             }
 
         # ETS compliance assessment
@@ -141,6 +179,16 @@ def api_routes():
             {"lat": wp["lat"], "lon": wp["lon"]}
             for wp in all_waypoints[::2]  # every other point for rendering
         ]
+
+    # Post-hoc satellite-aware re-ranking
+    if w_satellite > 0:
+        for route in routes:
+            risk = route["satellite"].get("satellite_risk_score")
+            route["_sat_penalty"] = risk if risk is not None else 0.5
+        routes.sort(key=lambda r: r["_sat_penalty"])
+        for rank, route in enumerate(routes, start=1):
+            route["rank"] = rank
+            route.pop("_sat_penalty", None)
 
     return jsonify({"routes": routes})
 

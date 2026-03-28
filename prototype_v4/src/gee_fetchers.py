@@ -199,8 +199,8 @@ def enrich_waypoints(waypoints, sample_every=4):
     return results
 
 
-def satellite_summary(enriched_waypoints):
-    """Compute aggregate statistics from enriched waypoints."""
+def satellite_summary(enriched_waypoints, route=None):
+    """Compute aggregate statistics and satellite intelligence from enriched waypoints."""
     no2_vals = []
     sar_vals = []
     sst_vals = []
@@ -224,7 +224,7 @@ def satellite_summary(enriched_waypoints):
     def _avg(vals):
         return round(sum(vals) / len(vals), 6) if vals else None
 
-    return {
+    summary = {
         "waypoints_sampled": sampled_count,
         "waypoints_total": len(enriched_waypoints),
         "no2_mean": _avg(no2_vals),
@@ -237,3 +237,20 @@ def satellite_summary(enriched_waypoints):
         "co_count": len(co_vals),
         "gee_available": is_available(),
     }
+
+    # Satellite intelligence analysis
+    if route is not None:
+        from src.sat_analysis import analyze_route
+        analysis = analyze_route(enriched_waypoints, route)
+        summary.update(analysis)
+    else:
+        summary.update({
+            "emissions_verification": None,
+            "sea_state": None,
+            "port_congestion": [],
+            "air_quality": None,
+            "satellite_risk_score": None,
+            "warning_zones": [],
+        })
+
+    return summary

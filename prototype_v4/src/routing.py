@@ -104,11 +104,11 @@ def _haversine_km(lat1, lon1, lat2, lon2):
 def _edge_cost(u, v, data, w_emissions, w_cost, w_compliance, w_time, cargo_t):
     co2_kg = data["co2_g_per_tonne_km"] * data["distance_km"] * cargo_t / 1000.0
     total_cost_usd = data["cost_usd_per_tonne"] * cargo_t
-    inv_compliance = (6 - data["compliance_score"]) / 4.0
+    inv_compliance = 1.0 - data["compliance_score"]
     transit = data["transit_days"]
 
     co2_scale = 2000.0
-    cost_scale = 20000.0
+    cost_scale = 5000.0
     time_scale = 30.0
 
     norm_co2 = min(co2_kg / co2_scale, 3.0)
@@ -228,3 +228,148 @@ def find_routes(
         routes.append(summary)
 
     return routes
+
+
+def find_multi_routes(
+    stops: list[str],
+    cargo_t: float = 1.0,
+    w_emissions: float = 0.35,
+    w_cost: float = 0.25,
+    w_compliance: float = 0.25,
+    w_time: float = 0.15,
+    k: int = 3,
+) -> list[dict]:
+    """Route through an ordered list of stops (origin, waypoints…, destination).
+
+    Finds the best path for each consecutive pair of stops, then stitches
+    them into combined route summaries.  Returns up to *k* combined variants
+    by varying which per-segment alternative is used.
+    """
+    if len(stops) < 2:
+        return []
+
+    base_graph = get_graph()
+    weighted_graph = _assign_weights(
+        base_graph, w_emissions, w_cost, w_compliance, w_time, cargo_t
+    )
+
+    # Find k-shortest for each segment
+    segment_alternatives: list[list[dict]] = []
+    for seg_idx in range(len(stops) - 1):
+        seg_origin = stops[seg_idx]
+        seg_dest = stops[seg_idx + 1]
+        try:
+            gen = nx.shortest_simple_paths(
+                weighted_graph, seg_origin, seg_dest, weight="weight"
+            )
+            paths = []
+            for path in gen:
+                paths.append(path)
+                if len(paths) >= k:
+                    break
+        except (nx.NetworkXNoPath, nx.NodeNotFound):
+            paths = []
+
+        if not paths:
+            return []  # unreachable segment → no routes
+
+        alts = []
+        for path in paths:
+            summary = _summarize_path(path, base_graph, cargo_t)
+            summary["_segment"] = seg_idx
+            alts.append(summary)
+        segment_alternatives.append(alts)
+
+    # Build combined routes by picking segment alternatives
+    combined_routes: list[dict] = []
+
+    # Variant 1: best (first) alternative for every segment
+    combined_routes.append(_stitch_segments(
+        [alts[0] for alts in segment_alternatives]
+    ))
+
+    # Variants 2+: swap one segment at a time to its 2nd-best
+    for seg_idx, alts in enumerate(segment_alternatives):
+        if len(alts) > 1:
+            picks = [a[0] for a in segment_alternatives]
+            picks[seg_idx] = alts[1]
+            combined_routes.append(_stitch_segments(picks))
+            if len(combined_routes) >= k:
+                break
+
+    # De-duplicate and rank
+    seen = set()
+    unique = []
+    for route in combined_routes:
+        key = tuple(route["nodes"])
+        if key not in seen:
+            seen.add(key)
+            unique.append(route)
+
+    for rank, route in enumerate(unique[:k], start=1):
+        route["rank"] = rank
+
+    return unique[:k]
+
+
+def _stitch_segments(segments: list[dict]) -> dict:
+    """Merge a list of per-segment route summaries into one combined route."""
+    all_edges = []
+    all_nodes = []
+    all_labels = []
+    all_types = []
+    total_co2 = 0.0
+    total_cost = 0.0
+    total_days = 0.0
+    total_dist = 0.0
+    ets_exposure = False
+    compliance_scores = []
+    modes_used: list[str] = []
+
+    for seg_idx, seg in enumerate(segments):
+        for edge in seg["edges"]:
+            edge_copy = dict(edge)
+            edge_copy["segment"] = seg_idx
+            all_edges.append(edge_copy)
+
+        # Avoid duplicate node at segment join points
+        if seg_idx == 0:
+            all_nodes.extend(seg["nodes"])
+            all_labels.extend(seg["node_labels"])
+            all_types.extend(seg["node_types"])
+        else:
+            all_nodes.extend(seg["nodes"][1:])
+            all_labels.extend(seg["node_labels"][1:])
+            all_types.extend(seg["node_types"][1:])
+
+        total_co2 += seg["total_co2_kg"]
+        total_cost += seg["total_cost_usd"]
+        total_days += seg["total_transit_days"]
+        total_dist += seg["total_distance_km"]
+        if seg.get("ets_exposure"):
+            ets_exposure = True
+
+        for edge in seg["edges"]:
+            compliance_scores.append(edge["compliance_score"])
+            mode = edge["mode"]
+            if not modes_used or modes_used[-1] != mode:
+                modes_used.append(mode)
+
+    avg_compliance = (
+        sum(compliance_scores) / len(compliance_scores) if compliance_scores else 0
+    )
+
+    return {
+        "nodes": all_nodes,
+        "node_labels": all_labels,
+        "node_types": all_types,
+        "edges": all_edges,
+        "total_co2_kg": round(total_co2, 1),
+        "total_cost_usd": round(total_cost, 0),
+        "total_transit_days": round(total_days, 1),
+        "total_distance_km": round(total_dist, 0),
+        "ets_exposure": ets_exposure,
+        "avg_compliance_score": round(avg_compliance, 2),
+        "modes_used": modes_used,
+        "segment_count": len(segments),
+    }

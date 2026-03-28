@@ -157,6 +157,113 @@ html, body {
   gap: 8px;
 }
 
+/* ── Waypoint Stops ── */
+#waypoints-section {
+  margin: 10px 0 4px;
+}
+
+#waypoints-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.waypoint-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wp-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.wp-select-wrap {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.wp-select {
+  flex: 1;
+  padding: 10px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.wp-select:focus {
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
+}
+
+.btn-add-stop {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  color: var(--accent);
+  background: transparent;
+  border: 1.5px dashed var(--accent);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-add-stop:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-add-stop.hidden {
+  display: none;
+}
+
+.btn-remove-stop {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1;
+  color: #dc2626;
+  background: transparent;
+  border: 1px solid #dc2626;
+  border-radius: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-remove-stop:hover {
+  background: #dc2626;
+  color: #fff;
+}
+
+/* ── Leg Segment Headers ── */
+.leg-segment-header td {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+  background: rgba(0,0,0,0.03);
+  padding: 5px 8px;
+  border-top: 2px solid var(--accent);
+}
+
 /* ── Toggle Buttons ── */
 .input-mode-toggle {
   display: flex;
@@ -441,26 +548,41 @@ input[type="range"]::-webkit-slider-thumb {
   margin-top: 2px;
 }
 
-.route-ets-cost {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--accent-warn);
-  margin-bottom: 4px;
-}
+.route-ets-cost { display: none; }
+.route-offset  { display: none; }
+.offset-rate   { display: none; }
 
-.route-offset {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--accent-teal);
-  margin-bottom: 12px;
+/* ── Route Meta (unified 3-col grid) ── */
+.route-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 8px 0 10px;
 }
-
-.offset-rate {
-  font-weight: 400;
+.route-meta-cell {
+  text-align: center;
+  padding: 8px 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.route-meta-val {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.route-meta-val.risk-high   { color: #dc2626; }
+.route-meta-val.risk-mid    { color: #d97706; }
+.route-meta-val.risk-low    { color: #16a34a; }
+.route-meta-val.ets         { color: var(--accent-warn); }
+.route-meta-val.offset      { color: var(--accent-teal); }
+.route-meta-label {
+  font-size: 10px;
+  font-weight: 600;
   color: var(--text-muted);
-  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 
@@ -566,6 +688,194 @@ input[type="range"]::-webkit-slider-thumb {
   font-size: 11px;
   color: var(--text-muted);
   margin-top: 4px;
+}
+
+/* ── Satellite Badges (route cards — hidden, replaced by route-meta) ── */
+.sat-badges {
+  display: none;
+}
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.badge-risk { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.badge-ok   { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.badge-warn { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+.badge-sea  { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.badge-cong-low      { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.badge-cong-moderate { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+.badge-cong-high     { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+/* ── Satellite Analysis Sections ── */
+.sat-section {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.sat-section-title {
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Risk bar */
+.sat-risk-bar-wrap {
+  background: #f0f1f4;
+  border-radius: 6px;
+  height: 10px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.sat-risk-bar {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+.sat-risk-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Emissions verification */
+.sat-ev-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sat-ev-score {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.sat-hotspot-list {
+  margin: 6px 0 0 16px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.sat-hotspot-list li { margin-bottom: 2px; }
+
+/* Sea state */
+.badge-sea-calm     { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.badge-sea-moderate { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.badge-sea-rough    { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.sat-sea-detail {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-left: 8px;
+}
+
+/* Port congestion detail */
+.sat-cong-detail {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Air quality tier bar */
+.aq-tier-bar {
+  display: flex;
+  height: 14px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.aq-tier {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  min-width: 0;
+}
+.aq-clean    { background: #16a34a; }
+.aq-moderate { background: #d97706; }
+.aq-polluted { background: #dc2626; }
+.aq-legend {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+.aq-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin: 0 3px 0 8px;
+  vertical-align: middle;
+}
+.aq-dot.aq-clean    { background: #16a34a; }
+.aq-dot.aq-moderate { background: #d97706; }
+.aq-dot.aq-polluted { background: #dc2626; }
+.aq-narrative {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* ── Satellite Mode Toggle ── */
+.sat-mode-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 12px;
+}
+.sat-mode-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.sat-mode-toggle {
+  display: inline-flex;
+  background: var(--bg-input);
+  border-radius: 8px;
+  padding: 2px;
+  border: 1px solid var(--border);
+}
+.sat-mode-btn {
+  padding: 5px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  background: transparent;
+  transition: all 0.15s ease;
+  font-family: var(--font-sans);
+}
+.sat-mode-btn:hover {
+  color: var(--text-primary);
+}
+.sat-mode-btn.active {
+  background: var(--text-primary);
+  color: #fff;
+}
+
+/* Satellite mode indicator in panel */
+.sat-mode-indicator {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.sat-mode-indicator.synthetic,
+.sat-mode-indicator.online {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
 }
 
 /* ── ETS Panel ── */
@@ -733,58 +1043,6 @@ input[type="range"]::-webkit-slider-thumb {
   background: var(--text-primary);
   color: #ffffff;
   border-color: var(--text-primary);
-}
-
-/* ── Animation Controls ── */
-.anim-controls {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0 0;
-}
-
-.anim-btn {
-  padding: 6px 16px;
-  font-size: 12px;
-  font-weight: 600;
-  font-family: var(--font-sans);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: var(--bg-input);
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.anim-btn:hover {
-  background: var(--text-primary);
-  color: #ffffff;
-}
-
-.anim-progress-wrap {
-  flex: 1;
-  height: 6px;
-  background: var(--border);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.anim-progress-bar {
-  height: 100%;
-  width: 0%;
-  background: var(--text-primary);
-  border-radius: 3px;
-  transition: width 0.07s linear;
-}
-
-.anim-day {
-  font-size: 12px;
-  font-weight: 600;
-  font-family: var(--font-sans);
-  color: var(--text-secondary);
-  min-width: 60px;
-  text-align: right;
 }
 
 /* ── Responsive ── */

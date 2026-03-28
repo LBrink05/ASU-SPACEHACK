@@ -28,6 +28,12 @@
         {% endfor %}
       </select>
 
+      <!-- Intermediate Stops -->
+      <div id="waypoints-section">
+        <div id="waypoints-container"></div>
+        <button type="button" id="btn-add-stop" class="btn-add-stop" onclick="addWaypoint()">+ Add Stop</button>
+      </div>
+
       <label>Destination</label>
       <select id="sel-dest">
         {% for type_label, type_key in [("Ports", "port"), ("Cities", "city"), ("Airports", "airport"), ("Rail Hubs", "rail_hub"), ("Warehouses", "warehouse")] %}
@@ -82,17 +88,26 @@
         <input type="range" id="w-time" min="0" max="100" value="15">
         <span class="slider-val" id="v-time">15</span>
       </div>
+      <div class="slider-row">
+        <label>Satellite Risk</label>
+        <input type="range" id="w-satellite" min="0" max="100" value="0">
+        <span class="slider-val" id="v-satellite">0</span>
+      </div>
     </div>
 
-    <div class="checkbox-row">
-      <input type="checkbox" id="chk-satellite" checked>
-      <label for="chk-satellite">Fetch satellite data (slower)</label>
+    <div class="sat-mode-row">
+      <label class="sat-mode-label">Satellite Data</label>
+      <div class="sat-mode-toggle" id="sat-mode-toggle">
+        <button type="button" class="sat-mode-btn" data-mode="offline">Offline</button>
+        <button type="button" class="sat-mode-btn active" data-mode="synthetic">Synthetic</button>
+        <button type="button" class="sat-mode-btn" data-mode="online">Online</button>
+      </div>
     </div>
 
     <button id="btn-find" class="btn-primary" onclick="findRoutes()">FIND ROUTES</button>
     <div id="loading" class="loading hidden">
       <div class="spinner"></div>
-      <span>Querying satellite data&hellip;</span>
+      <span>Computing routes&hellip;</span>
     </div>
     <div id="error-msg" class="error-msg hidden"></div>
   </section>
@@ -106,6 +121,7 @@
       <div class="map-toolbar">
         <label class="overlay-toggle"><input type="checkbox" id="chk-corridors" checked onchange="redrawMap()"> Green Corridors</label>
         <label class="overlay-toggle"><input type="checkbox" id="chk-ports-geo" checked onchange="redrawMap()"> Major Ports</label>
+        <label class="overlay-toggle"><input type="checkbox" id="chk-warnings" checked onchange="redrawMap()"> Warning Zones</label>
         <div class="click-mode-group">
           <span class="click-label">Click map:</span>
           <button id="btn-click-origin" class="click-btn active" onclick="setClickMode('origin')">Set Origin</button>
@@ -113,13 +129,6 @@
         </div>
       </div>
       <div id="route-map" class="map-container"></div>
-      <div id="anim-controls" class="anim-controls hidden">
-        <button id="btn-play" class="anim-btn" onclick="toggleAnimation()">&#9654; Play</button>
-        <div class="anim-progress-wrap">
-          <div class="anim-progress-bar" id="anim-bar"></div>
-        </div>
-        <span id="anim-day" class="anim-day">Day 0</span>
-      </div>
     </section>
 
 
@@ -176,10 +185,6 @@ let selectedRouteIdx = 0;
 let clickMode = 'origin';
 let corridorsData = null;
 let portsGeoData = null;
-let animTimer = null;
-let animStep = 0;
-let animPath = [];
-let animTotalDays = 0;
 const ALL_NODES = {{ nodes | tojson }};
 
 /* ── Input mode toggle ── */
@@ -191,10 +196,79 @@ function setInputMode(mode) {
   document.getElementById('btn-custom').classList.toggle('active', mode === 'custom');
 }
 
+/* ── Waypoint management ── */
+const MAX_WAYPOINTS = 6;
+let waypointCount = 0;
+
+function getNodeOptionsHTML() {
+  const src = document.getElementById('sel-origin');
+  return src.innerHTML;
+}
+
+function addWaypoint() {
+  if (waypointCount >= MAX_WAYPOINTS) return;
+  const container = document.getElementById('waypoints-container');
+  const idx = waypointCount;
+  const row = document.createElement('div');
+  row.className = 'waypoint-row';
+  row.dataset.wpIdx = idx;
+  row.innerHTML = `
+    <label class="wp-label">Stop ${idx + 1}</label>
+    <div class="wp-select-wrap">
+      <select id="sel-wp-${idx}" class="wp-select">${getNodeOptionsHTML()}</select>
+      <button type="button" class="btn-remove-stop" onclick="removeWaypoint(this)" title="Remove stop">&times;</button>
+    </div>
+  `;
+  container.appendChild(row);
+  waypointCount++;
+  updateWaypointLabels();
+  if (waypointCount >= MAX_WAYPOINTS) {
+    document.getElementById('btn-add-stop').classList.add('hidden');
+  }
+}
+
+function removeWaypoint(btn) {
+  const row = btn.closest('.waypoint-row');
+  row.remove();
+  waypointCount--;
+  updateWaypointLabels();
+  document.getElementById('btn-add-stop').classList.remove('hidden');
+}
+
+function updateWaypointLabels() {
+  const rows = document.querySelectorAll('#waypoints-container .waypoint-row');
+  rows.forEach((row, i) => {
+    row.dataset.wpIdx = i;
+    const sel = row.querySelector('select');
+    sel.id = 'sel-wp-' + i;
+    row.querySelector('.wp-label').textContent = 'Stop ' + (i + 1);
+  });
+}
+
+function collectWaypoints() {
+  const wps = [];
+  const rows = document.querySelectorAll('#waypoints-container .waypoint-row');
+  rows.forEach(row => {
+    const sel = row.querySelector('select');
+    if (sel && sel.value) wps.push(sel.value);
+  });
+  return wps;
+}
+
 /* ── Slider labels ── */
 document.querySelectorAll('.slider-row input[type=range]').forEach(s => {
   const span = s.parentElement.querySelector('.slider-val');
   s.addEventListener('input', () => { span.textContent = s.value; });
+});
+
+/* ── Satellite mode toggle ── */
+let satMode = 'synthetic';
+document.querySelectorAll('.sat-mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.sat-mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    satMode = btn.dataset.mode;
+  });
 });
 
 /* ── Find Routes ── */
@@ -212,12 +286,14 @@ async function findRoutes() {
     w_cost: parseInt(document.getElementById('w-cost').value) / 100,
     w_compliance: parseInt(document.getElementById('w-compliance').value) / 100,
     w_time: parseInt(document.getElementById('w-time').value) / 100,
-    fetch_satellite: document.getElementById('chk-satellite').checked,
+    w_satellite: parseInt(document.getElementById('w-satellite').value) / 100,
+    sat_mode: satMode,
   };
 
   if (inputMode === 'dropdown') {
     payload.origin = document.getElementById('sel-origin').value;
     payload.destination = document.getElementById('sel-dest').value;
+    payload.waypoints = collectWaypoints();
   } else {
     payload.custom_origin = true;
     payload.custom_destination = true;
@@ -294,12 +370,29 @@ function renderRouteCards(routes) {
             <span class="stat-label">Distance</span>
           </div>
         </div>
-        <div class="route-ets-cost">ETS Cost: ${etsCost}</div>
-        <div class="route-offset">Carbon Offset: $${formatNum(r.total_co2_kg / 1000 * 25)} <span class="offset-rate">@ $25/tonne</span></div>
+        <div class="route-meta">
+          <div class="route-meta-cell">
+            ${r.satellite && r.satellite.satellite_risk_score !== null
+              ? `<div class="route-meta-val ${r.satellite.satellite_risk_score > 0.6 ? 'risk-high' : r.satellite.satellite_risk_score > 0.3 ? 'risk-mid' : 'risk-low'}">${(r.satellite.satellite_risk_score * 100).toFixed(0)}%</div>`
+              : `<div class="route-meta-val" style="color:var(--text-muted)">--</div>`}
+            <div class="route-meta-label">Sat Risk</div>
+          </div>
+          <div class="route-meta-cell">
+            <div class="route-meta-val ets">${etsCost}</div>
+            <div class="route-meta-label">ETS Cost</div>
+          </div>
+          <div class="route-meta-cell">
+            <div class="route-meta-val offset">$${formatNum(r.total_co2_kg / 1000 * 25)}</div>
+            <div class="route-meta-label">Carbon Offset</div>
+          </div>
+        </div>
         <table class="leg-table">
           <thead><tr><th>From</th><th>To</th><th>Mode</th><th>CO₂</th><th>Cost</th><th>Days</th></tr></thead>
           <tbody>
-            ${r.edges.map(e => `
+            ${r.edges.map((e, ei) => {
+              const segHeader = (e.segment !== undefined && (ei === 0 || e.segment !== r.edges[ei-1].segment))
+                ? `<tr class="leg-segment-header"><td colspan="6">Segment ${e.segment + 1}</td></tr>` : '';
+              return segHeader + `
               <tr>
                 <td>${e.from}</td>
                 <td>${e.to}</td>
@@ -308,7 +401,7 @@ function renderRouteCards(routes) {
                 <td>$${formatNum(e.cost_usd)}</td>
                 <td>${e.transit_days}</td>
               </tr>
-            `).join('')}
+            `}).join('')}
           </tbody>
         </table>
       </div>
@@ -318,7 +411,6 @@ function renderRouteCards(routes) {
 
 function selectRoute(idx) {
   selectedRouteIdx = idx;
-  stopAnimation();
   document.querySelectorAll('.route-card').forEach((c, i) => {
     c.classList.toggle('selected', i === idx);
   });
@@ -474,6 +566,36 @@ function renderMap(routes) {
     }
   });
 
+  /* Warning-zone markers (satellite risk icons) */
+  if (document.getElementById('chk-warnings').checked && routes.length > 0) {
+    const selRoute = routes[selectedRouteIdx || 0];
+    const zones = selRoute.satellite && selRoute.satellite.warning_zones;
+    if (zones && zones.length > 0) {
+      const WARN_STYLE = {
+        pollution: {color: '#dc2626', symbol: 'triangle-up', size: 12},
+        rough_sea: {color: '#2563eb', symbol: 'diamond', size: 12},
+        congestion: {color: '#ea580c', symbol: 'square', size: 12},
+      };
+      const wLats = [], wLons = [], wTexts = [], wColors = [], wSymbols = [], wSizes = [];
+      zones.forEach(z => {
+        const st = WARN_STYLE[z.icon] || WARN_STYLE.pollution;
+        wLats.push(z.lat); wLons.push(z.lon);
+        wTexts.push(`⚠ ${z.label} (${z.severity})`);
+        wColors.push(st.color); wSymbols.push(st.symbol); wSizes.push(st.size);
+      });
+      traces.push({
+        type: 'scattergeo',
+        lat: wLats, lon: wLons,
+        mode: 'markers',
+        marker: {size: wSizes, color: wColors, symbol: wSymbols, line: {width: 1.5, color: '#ffffff'}},
+        showlegend: false,
+        hoverinfo: 'text',
+        text: wTexts,
+        meta: {warnings: true},
+      });
+    }
+  }
+
   const layout = {
     geo: GEO_LAYOUT,
     paper_bgcolor: '#ffffff',
@@ -488,12 +610,6 @@ function renderMap(routes) {
 
   Plotly.newPlot('route-map', traces, layout, {responsive: true, displayModeBar: false});
   setupMapClickHandler();
-
-  // Show animation controls
-  stopAnimation();
-  document.getElementById('anim-controls').classList.remove('hidden');
-  document.getElementById('anim-bar').style.width = '0%';
-  document.getElementById('anim-day').textContent = 'Day 0';
 }
 
 function highlightRoute(idx) {
@@ -520,13 +636,18 @@ function renderSatellitePanel(route) {
   if (!sat || !sat.gee_available) {
     container.innerHTML = `
       <div class="sat-offline">
-        <p>GEE Offline — Satellite data not available</p>
-        <p class="sat-note">Enable Google Earth Engine authentication to fetch real observations</p>
+        <p>Satellite Data — Offline</p>
+        <p class="sat-note">Switch to <b>Synthetic</b> for demo data or <b>Online</b> for live GEE observations</p>
       </div>`;
     return;
   }
 
+  const modeLabel = sat.sat_mode === 'synthetic' ? '<span class="sat-mode-indicator synthetic">Synthetic Data</span>'
+    : sat.sat_mode === 'online' ? '<span class="sat-mode-indicator online">Live GEE Data</span>'
+    : '';
+
   container.innerHTML = `
+    ${modeLabel}
     <div class="sat-stat-grid">
       <div class="sat-stat">
         <div class="sat-val ${sat.no2_mean !== null ? '' : 'no-data'}">${sat.no2_mean !== null ? sat.no2_mean.toExponential(2) : '—'}</div>
@@ -556,6 +677,48 @@ function renderSatellitePanel(route) {
     <div class="sat-meta">
       Sampled ${sat.waypoints_sampled} of ${sat.waypoints_total} waypoints along route
     </div>
+    ${sat.satellite_risk_score !== null && sat.satellite_risk_score !== undefined ? `
+    <div class="sat-section">
+      <div class="sat-section-title">Composite Satellite Risk</div>
+      <div class="sat-risk-bar-wrap">
+        <div class="sat-risk-bar" style="width:${(sat.satellite_risk_score * 100).toFixed(0)}%; background:${sat.satellite_risk_score > 0.6 ? '#dc2626' : sat.satellite_risk_score > 0.3 ? '#ea580c' : '#16a34a'}"></div>
+      </div>
+      <div class="sat-risk-label">${(sat.satellite_risk_score * 100).toFixed(0)}% — ${sat.satellite_risk_score > 0.6 ? 'High Risk' : sat.satellite_risk_score > 0.3 ? 'Moderate' : 'Low Risk'}</div>
+    </div>` : ''}
+    ${sat.emissions_verification ? `
+    <div class="sat-section">
+      <div class="sat-section-title">Emissions Verification</div>
+      <div class="sat-ev-row">
+        <span class="badge badge-${sat.emissions_verification.pollution_band === 'low' ? 'ok' : 'warn'}">${sat.emissions_verification.pollution_band === 'low' ? 'Verified Clean' : 'Hotspots Detected'}</span>
+        <span class="sat-ev-score">Score: ${(sat.emissions_verification.verification_score * 100).toFixed(0)}%</span>
+      </div>
+      ${sat.emissions_verification.hotspots && sat.emissions_verification.hotspots.length > 0 ? `
+      <ul class="sat-hotspot-list">
+        ${sat.emissions_verification.hotspots.map(h => `<li>${h.reason} near (${h.lat.toFixed(2)}, ${h.lon.toFixed(2)})</li>`).join('')}
+      </ul>` : ''}
+    </div>` : ''}
+    ${sat.sea_state ? `
+    <div class="sat-section">
+      <div class="sat-section-title">Sea-State Risk</div>
+      <span class="badge badge-sea-${sat.sea_state.risk_level}">${sat.sea_state.risk_level === 'rough' ? 'Rough' : sat.sea_state.risk_level === 'moderate' ? 'Moderate' : 'Calm'}</span>
+      ${sat.sea_state.rough_count > 0 ? `<span class="sat-sea-detail">${sat.sea_state.rough_count} rough waypoint(s)</span>` : ''}
+    </div>` : ''}
+    ${sat.port_congestion && sat.port_congestion.length ? `
+    <div class="sat-section">
+      <div class="sat-section-title">Port Congestion</div>
+      ${sat.port_congestion.map(p => `<span class="badge badge-cong-${p.congestion_level}">${p.port}: ${p.congestion_level}</span> `).join('')}
+    </div>` : ''}
+    ${sat.air_quality ? `
+    <div class="sat-section">
+      <div class="sat-section-title">Air Quality Report</div>
+      <div class="aq-tier-bar">
+        <div class="aq-tier aq-clean" style="width:${sat.air_quality.clean_pct}%">${sat.air_quality.clean_pct > 5 ? sat.air_quality.clean_pct + '%' : ''}</div>
+        <div class="aq-tier aq-moderate" style="width:${sat.air_quality.moderate_pct}%">${sat.air_quality.moderate_pct > 5 ? sat.air_quality.moderate_pct + '%' : ''}</div>
+        <div class="aq-tier aq-polluted" style="width:${sat.air_quality.polluted_pct}%">${sat.air_quality.polluted_pct > 5 ? sat.air_quality.polluted_pct + '%' : ''}</div>
+      </div>
+      <div class="aq-legend"><span class="aq-dot aq-clean"></span>Clean <span class="aq-dot aq-moderate"></span>Moderate <span class="aq-dot aq-polluted"></span>Polluted</div>
+      <div class="aq-narrative">${sat.air_quality.narrative}</div>
+    </div>` : ''}
   `;
 }
 
@@ -680,89 +843,6 @@ function setupMapClickHandler() {
       setClickMode('origin');
     }
   });
-}
-
-/* ── Route Animation ── */
-function buildAnimPath(route) {
-  const path = [];
-  let daysSoFar = 0;
-  route.edges.forEach(edge => {
-    const nSteps = Math.max(Math.ceil(edge.transit_days * 8), 4);
-    for (let i = 0; i <= nSteps; i++) {
-      const t = i / nSteps;
-      path.push({
-        lat: edge.from_lat + t * (edge.to_lat - edge.from_lat),
-        lon: edge.from_lon + t * (edge.to_lon - edge.from_lon),
-        day: daysSoFar + t * edge.transit_days,
-        mode: edge.mode,
-      });
-    }
-    daysSoFar += edge.transit_days;
-  });
-  return {path, totalDays: daysSoFar};
-}
-
-function toggleAnimation() {
-  if (animTimer) { stopAnimation(); return; }
-  if (!currentRoutes || !currentRoutes[selectedRouteIdx]) return;
-
-  const route = currentRoutes[selectedRouteIdx];
-  const result = buildAnimPath(route);
-  animPath = result.path;
-  animTotalDays = result.totalDays;
-  animStep = 0;
-
-  document.getElementById('btn-play').innerHTML = '&#9646;&#9646; Pause';
-
-  Plotly.addTraces('route-map', {
-    type: 'scattergeo',
-    lat: [animPath[0].lat],
-    lon: [animPath[0].lon],
-    mode: 'markers',
-    marker: {
-      size: 14,
-      color: MODE_COLORS[animPath[0].mode],
-      symbol: 'circle',
-      line: {width: 2.5, color: '#ffffff'},
-    },
-    showlegend: false,
-    hoverinfo: 'none',
-    meta: {animMarker: true},
-  });
-
-  animTimer = setInterval(stepAnimation, 70);
-}
-
-function stepAnimation() {
-  if (animStep >= animPath.length - 1) {
-    stopAnimation();
-    document.getElementById('btn-play').innerHTML = '&#8635; Replay';
-    return;
-  }
-  animStep++;
-  const pt = animPath[animStep];
-  const mapDiv = document.getElementById('route-map');
-  const idx = mapDiv.data.length - 1;
-
-  Plotly.restyle('route-map', {
-    lat: [[pt.lat]],
-    lon: [[pt.lon]],
-    'marker.color': [MODE_COLORS[pt.mode]],
-  }, [idx]);
-
-  const pct = (animStep / (animPath.length - 1)) * 100;
-  document.getElementById('anim-bar').style.width = pct + '%';
-  document.getElementById('anim-day').textContent = 'Day ' + pt.day.toFixed(1);
-}
-
-function stopAnimation() {
-  if (animTimer) { clearInterval(animTimer); animTimer = null; }
-  document.getElementById('btn-play').innerHTML = '&#9654; Play';
-  const mapDiv = document.getElementById('route-map');
-  if (mapDiv.data) {
-    const animIdx = mapDiv.data.findIndex(t => t.meta && t.meta.animMarker);
-    if (animIdx >= 0) Plotly.deleteTraces('route-map', animIdx);
-  }
 }
 
 /* ── Initialize map on load ── */
