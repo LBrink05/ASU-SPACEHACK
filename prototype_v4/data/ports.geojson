@@ -1,0 +1,113 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "sgp", "name": "Singapore", "country": "Singapore",
+        "teu_millions": 39.0, "corridors": ["sgp_rtm"],
+        "no2_signature": "very_high", "notes": "Strait of Malacca chokepoint"
+      },
+      "geometry": { "type": "Point", "coordinates": [103.8, 1.3] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "rtm", "name": "Rotterdam", "country": "Netherlands",
+        "teu_millions": 14.0, "corridors": ["sgp_rtm", "dxb_ham"],
+        "no2_signature": "high", "notes": "Maasvlakte terminal; EU ETS scope"
+      },
+      "geometry": { "type": "Point", "coordinates": [4.1, 51.95] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "lax", "name": "Los Angeles / Long Beach", "country": "USA",
+        "teu_millions": 18.0, "corridors": ["la_sha"],
+        "no2_signature": "high", "notes": "CA speed limit <12 kn within 40 nm"
+      },
+      "geometry": { "type": "Point", "coordinates": [-118.3, 33.7] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "sha", "name": "Shanghai Yangshan", "country": "China",
+        "teu_millions": 47.3, "corridors": ["la_sha"],
+        "no2_signature": "very_high", "notes": "World's busiest container port"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.3, 31.2] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "dxb", "name": "Dubai (Jebel Ali)", "country": "UAE",
+        "teu_millions": 14.3, "corridors": ["dxb_ham"],
+        "no2_signature": "high", "notes": "Middle East's largest port"
+      },
+      "geometry": { "type": "Point", "coordinates": [55.1, 25.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ham", "name": "Hamburg", "country": "Germany",
+        "teu_millions": 8.3, "corridors": ["dxb_ham"],
+        "no2_signature": "medium", "notes": "Shore power mandate by 2030"
+      },
+      "geometry": { "type": "Point", "coordinates": [9.9, 53.5] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "por", "name": "Port Said (Suez N)", "country": "Egypt",
+        "teu_millions": 5.2, "corridors": ["sgp_rtm", "dxb_ham"],
+        "no2_signature": "high", "notes": "Suez Canal northern entry; high anchorage NO₂"
+      },
+      "geometry": { "type": "Point", "coordinates": [32.3, 29.9] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "aden", "name": "Gulf of Aden / Djibouti", "country": "Djibouti",
+        "teu_millions": 1.5, "corridors": ["sgp_rtm", "dxb_ham"],
+        "no2_signature": "medium", "notes": "Rerouting hub during Red Sea crisis 2023-24"
+      },
+      "geometry": { "type": "Point", "coordinates": [43.5, 12.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "colomobo", "name": "Colombo", "country": "Sri Lanka",
+        "teu_millions": 7.2, "corridors": ["sgp_rtm"],
+        "no2_signature": "medium", "notes": "Indian Ocean transshipment hub"
+      },
+      "geometry": { "type": "Point", "coordinates": [79.9, 6.9] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "gibralt", "name": "Gibraltar Strait", "country": "UK/Spain",
+        "teu_millions": 0, "corridors": ["sgp_rtm", "dxb_ham"],
+        "no2_signature": "high", "notes": "Chokepoint; high vessel density; ~120 ships/day"
+      },
+      "geometry": { "type": "Point", "coordinates": [-5.4, 36.1] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "malacca", "name": "Strait of Malacca", "country": "International",
+        "teu_millions": 0, "corridors": ["sgp_rtm"],
+        "no2_signature": "very_high", "notes": "World's busiest shipping strait; 90,000+ vessels/year"
+      },
+      "geometry": { "type": "Point", "coordinates": [100.5, 4.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "busan", "name": "Busan", "country": "South Korea",
+        "teu_millions": 22.8, "corridors": ["la_sha"],
+        "no2_signature": "high", "notes": "Northeast Asia hub"
+      },
+      "geometry": { "type": "Point", "coordinates": [129.1, 35.1] }
+    }
+  ]
+}

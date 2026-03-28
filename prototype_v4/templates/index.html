@@ -1,0 +1,528 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard">
+
+  <!-- LEFT PANEL: Route Builder -->
+  <section class="panel builder-panel">
+    <h2 class="panel-title">Route Builder</h2>
+
+    <div class="input-mode-toggle">
+      <button id="btn-dropdown" class="toggle-btn active" onclick="setInputMode('dropdown')">Graph Nodes</button>
+      <button id="btn-custom" class="toggle-btn" onclick="setInputMode('custom')">Custom Lat/Lon</button>
+    </div>
+
+    <!-- Dropdown mode -->
+    <div id="mode-dropdown" class="input-section">
+      <label>Origin</label>
+      <select id="sel-origin">
+        {% for type_label, type_key in [("Ports", "port"), ("Cities", "city"), ("Airports", "airport"), ("Rail Hubs", "rail_hub"), ("Warehouses", "warehouse")] %}
+        {% set group_nodes = nodes | selectattr("type", "equalto", type_key) | list %}
+        {% if group_nodes %}
+        <optgroup label="{{ type_label }}">
+          {% for n in group_nodes %}
+          <option value="{{ n.id }}" data-lat="{{ n.lat }}" data-lon="{{ n.lon }}">{{ n.label }}</option>
+          {% endfor %}
+        </optgroup>
+        {% endif %}
+        {% endfor %}
+      </select>
+
+      <label>Destination</label>
+      <select id="sel-dest">
+        {% for type_label, type_key in [("Ports", "port"), ("Cities", "city"), ("Airports", "airport"), ("Rail Hubs", "rail_hub"), ("Warehouses", "warehouse")] %}
+        {% set group_nodes = nodes | selectattr("type", "equalto", type_key) | list %}
+        {% if group_nodes %}
+        <optgroup label="{{ type_label }}">
+          {% for n in group_nodes %}
+          <option value="{{ n.id }}" data-lat="{{ n.lat }}" data-lon="{{ n.lon }}">{{ n.label }}</option>
+          {% endfor %}
+        </optgroup>
+        {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Custom lat/lon mode -->
+    <div id="mode-custom" class="input-section hidden">
+      <label>Origin Lat / Lon</label>
+      <div class="coord-row">
+        <input type="number" id="origin-lat" step="0.01" placeholder="Lat">
+        <input type="number" id="origin-lon" step="0.01" placeholder="Lon">
+      </div>
+      <label>Destination Lat / Lon</label>
+      <div class="coord-row">
+        <input type="number" id="dest-lat" step="0.01" placeholder="Lat">
+        <input type="number" id="dest-lon" step="0.01" placeholder="Lon">
+      </div>
+    </div>
+
+    <label>Cargo Weight (tonnes)</label>
+    <input type="number" id="cargo-t" value="100" min="1" step="1">
+
+    <div class="weight-sliders">
+      <h3>Optimization Weights</h3>
+      <div class="slider-row">
+        <label>Emissions</label>
+        <input type="range" id="w-emissions" min="0" max="100" value="35">
+        <span class="slider-val" id="v-emissions">35</span>
+      </div>
+      <div class="slider-row">
+        <label>Cost</label>
+        <input type="range" id="w-cost" min="0" max="100" value="25">
+        <span class="slider-val" id="v-cost">25</span>
+      </div>
+      <div class="slider-row">
+        <label>Compliance</label>
+        <input type="range" id="w-compliance" min="0" max="100" value="25">
+        <span class="slider-val" id="v-compliance">25</span>
+      </div>
+      <div class="slider-row">
+        <label>Transit Time</label>
+        <input type="range" id="w-time" min="0" max="100" value="15">
+        <span class="slider-val" id="v-time">15</span>
+      </div>
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="chk-satellite" checked>
+      <label for="chk-satellite">Fetch satellite data (slower)</label>
+    </div>
+
+    <button id="btn-find" class="btn-primary" onclick="findRoutes()">FIND ROUTES</button>
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <span>Querying satellite data&hellip;</span>
+    </div>
+    <div id="error-msg" class="error-msg hidden"></div>
+  </section>
+
+  <!-- RIGHT AREA: Results -->
+  <div class="results-area">
+
+    <!-- Route Map -->
+    <section class="panel map-panel">
+      <h2 class="panel-title">Route Map</h2>
+      <div id="route-map" class="map-container"></div>
+    </section>
+
+    <!-- Route Options -->
+    <section class="panel routes-panel" id="routes-panel">
+      <h2 class="panel-title">Route Options</h2>
+      <div id="route-cards" class="route-cards">
+        <p class="placeholder-text">Configure a route and click FIND ROUTES</p>
+      </div>
+    </section>
+
+    <!-- Satellite Evidence -->
+    <section class="panel sat-panel" id="sat-panel">
+      <h2 class="panel-title">Satellite Evidence</h2>
+      <div id="sat-data" class="sat-grid">
+        <p class="placeholder-text">Satellite data will appear after route search</p>
+      </div>
+    </section>
+
+    <!-- ETS Compliance -->
+    <section class="panel ets-panel" id="ets-panel">
+      <h2 class="panel-title">EU ETS Compliance</h2>
+      <div id="ets-data" class="ets-content">
+        <p class="placeholder-text">ETS assessment will appear after route search</p>
+      </div>
+    </section>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const MODE_COLORS = {
+  ocean: '#2563eb',
+  rail: '#16a34a',
+  truck: '#ea580c',
+  air: '#dc2626',
+  last_mile: '#6b7280'
+};
+
+const MODE_LABELS = {
+  ocean: 'Ocean',
+  rail: 'Rail',
+  truck: 'Truck',
+  air: 'Air',
+  last_mile: 'Last Mile'
+};
+
+let inputMode = 'dropdown';
+let currentRoutes = null;
+
+/* ── Input mode toggle ── */
+function setInputMode(mode) {
+  inputMode = mode;
+  document.getElementById('mode-dropdown').classList.toggle('hidden', mode !== 'dropdown');
+  document.getElementById('mode-custom').classList.toggle('hidden', mode !== 'custom');
+  document.getElementById('btn-dropdown').classList.toggle('active', mode === 'dropdown');
+  document.getElementById('btn-custom').classList.toggle('active', mode === 'custom');
+}
+
+/* ── Slider labels ── */
+document.querySelectorAll('.slider-row input[type=range]').forEach(s => {
+  const span = s.parentElement.querySelector('.slider-val');
+  s.addEventListener('input', () => { span.textContent = s.value; });
+});
+
+/* ── Find Routes ── */
+async function findRoutes() {
+  const btn = document.getElementById('btn-find');
+  const loading = document.getElementById('loading');
+  const errorMsg = document.getElementById('error-msg');
+  btn.disabled = true;
+  loading.classList.remove('hidden');
+  errorMsg.classList.add('hidden');
+
+  const payload = {
+    cargo_t: parseFloat(document.getElementById('cargo-t').value) || 100,
+    w_emissions: parseInt(document.getElementById('w-emissions').value) / 100,
+    w_cost: parseInt(document.getElementById('w-cost').value) / 100,
+    w_compliance: parseInt(document.getElementById('w-compliance').value) / 100,
+    w_time: parseInt(document.getElementById('w-time').value) / 100,
+    fetch_satellite: document.getElementById('chk-satellite').checked,
+  };
+
+  if (inputMode === 'dropdown') {
+    payload.origin = document.getElementById('sel-origin').value;
+    payload.destination = document.getElementById('sel-dest').value;
+  } else {
+    payload.custom_origin = true;
+    payload.custom_destination = true;
+    payload.origin_lat = parseFloat(document.getElementById('origin-lat').value);
+    payload.origin_lon = parseFloat(document.getElementById('origin-lon').value);
+    payload.dest_lat = parseFloat(document.getElementById('dest-lat').value);
+    payload.dest_lon = parseFloat(document.getElementById('dest-lon').value);
+  }
+
+  try {
+    const resp = await fetch('/api/routes', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+
+    if (data.error) {
+      errorMsg.textContent = data.error;
+      errorMsg.classList.remove('hidden');
+      return;
+    }
+
+    currentRoutes = data.routes;
+    renderRouteCards(data.routes);
+    renderMap(data.routes);
+    if (data.routes.length > 0) {
+      renderSatellitePanel(data.routes[0]);
+      renderETSPanel(data.routes[0]);
+    }
+  } catch (err) {
+    errorMsg.textContent = 'Request failed: ' + err.message;
+    errorMsg.classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+    loading.classList.add('hidden');
+  }
+}
+
+/* ── Route Cards ── */
+function renderRouteCards(routes) {
+  const container = document.getElementById('route-cards');
+  if (!routes.length) {
+    container.innerHTML = '<p class="placeholder-text">No routes found</p>';
+    return;
+  }
+
+  container.innerHTML = routes.map((r, i) => {
+    const modeIcons = r.modes_used.map(m =>
+      `<span class="mode-tag" style="background:${MODE_COLORS[m]}">${MODE_LABELS[m]}</span>`
+    ).join('');
+
+    const etsCost = r.ets ? `€${r.ets.total_ets_cost_eur.toLocaleString()}` : '—';
+
+    return `
+      <div class="route-card ${i === 0 ? 'selected' : ''}" onclick="selectRoute(${i})">
+        <div class="route-rank">Route ${r.rank}</div>
+        <div class="route-modes">${modeIcons}</div>
+        <div class="route-stats">
+          <div class="stat">
+            <span class="stat-val">${formatNum(r.total_co2_kg)} kg</span>
+            <span class="stat-label">CO₂</span>
+          </div>
+          <div class="stat">
+            <span class="stat-val">$${formatNum(r.total_cost_usd)}</span>
+            <span class="stat-label">Cost</span>
+          </div>
+          <div class="stat">
+            <span class="stat-val">${r.total_transit_days}d</span>
+            <span class="stat-label">Transit</span>
+          </div>
+          <div class="stat">
+            <span class="stat-val">${formatNum(r.total_distance_km)} km</span>
+            <span class="stat-label">Distance</span>
+          </div>
+        </div>
+        <div class="route-ets-cost">ETS Cost: ${etsCost}</div>
+        <table class="leg-table">
+          <thead><tr><th>From</th><th>To</th><th>Mode</th><th>CO₂</th><th>Cost</th><th>Days</th></tr></thead>
+          <tbody>
+            ${r.edges.map(e => `
+              <tr>
+                <td>${e.from}</td>
+                <td>${e.to}</td>
+                <td><span class="mode-dot" style="background:${MODE_COLORS[e.mode]}"></span>${MODE_LABELS[e.mode]}</td>
+                <td>${formatNum(e.co2_kg)} kg</td>
+                <td>$${formatNum(e.cost_usd)}</td>
+                <td>${e.transit_days}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectRoute(idx) {
+  document.querySelectorAll('.route-card').forEach((c, i) => {
+    c.classList.toggle('selected', i === idx);
+  });
+  if (currentRoutes && currentRoutes[idx]) {
+    renderSatellitePanel(currentRoutes[idx]);
+    renderETSPanel(currentRoutes[idx]);
+    highlightRoute(idx);
+  }
+}
+
+/* ── Map ── */
+function renderMap(routes) {
+  const traces = [];
+
+  routes.forEach((route, ri) => {
+    const opacity = ri === 0 ? 1.0 : 0.3;
+
+    // Group edges by mode for coloring
+    route.edges.forEach(edge => {
+      traces.push({
+        type: 'scattergeo',
+        lat: [edge.from_lat, edge.to_lat],
+        lon: [edge.from_lon, edge.to_lon],
+        mode: 'lines',
+        line: {
+          width: ri === 0 ? 3 : 1.5,
+          color: MODE_COLORS[edge.mode],
+        },
+        opacity: opacity,
+        name: ri === 0 ? `R${route.rank}: ${MODE_LABELS[edge.mode]}` : '',
+        showlegend: ri === 0,
+        hoverinfo: 'text',
+        text: `${edge.from} → ${edge.to}<br>${MODE_LABELS[edge.mode]}<br>${formatNum(edge.co2_kg)} kg CO₂`,
+        meta: {routeIdx: ri},
+      });
+    });
+
+    // Node markers for primary route — per-type colors
+    if (ri === 0) {
+      const labels = route.node_labels;
+      const nodeTypes = route.node_types || [];
+      const lats = route.edges.map(e => e.from_lat);
+      lats.push(route.edges[route.edges.length - 1].to_lat);
+      const lons = route.edges.map(e => e.from_lon);
+      lons.push(route.edges[route.edges.length - 1].to_lon);
+
+      const TYPE_MARKER = {
+        port:      {color: '#2563eb', symbol: 'circle',       size: 10},
+        city:      {color: '#111111', symbol: 'circle',       size: 9},
+        airport:   {color: '#dc2626', symbol: 'triangle-up',  size: 10},
+        rail_hub:  {color: '#16a34a', symbol: 'diamond',      size: 10},
+        warehouse: {color: '#ea580c', symbol: 'square',       size: 9},
+      };
+      const defaultMarker = {color: '#6b7280', symbol: 'circle', size: 8};
+
+      const colors = nodeTypes.map(t => (TYPE_MARKER[t] || defaultMarker).color);
+      const symbols = nodeTypes.map(t => (TYPE_MARKER[t] || defaultMarker).symbol);
+      const sizes = nodeTypes.map(t => (TYPE_MARKER[t] || defaultMarker).size);
+
+      traces.push({
+        type: 'scattergeo',
+        lat: lats,
+        lon: lons,
+        mode: 'markers+text',
+        marker: {size: sizes, color: colors, symbol: symbols, line: {width: 1.5, color: '#ffffff'}},
+        text: labels,
+        textposition: 'top center',
+        textfont: {size: 11, color: '#333333'},
+        showlegend: false,
+        hoverinfo: 'text',
+      });
+    }
+  });
+
+  const layout = {
+    geo: {
+      projection: {type: 'orthographic', rotation: {lon: 60, lat: 20}},
+      bgcolor: '#ffffff',
+      landcolor: '#e8ebe4',
+      oceancolor: '#dce8f5',
+      lakecolor: '#dce8f5',
+      coastlinecolor: '#b0b8c0',
+      countrycolor: '#c8cdd4',
+      showframe: false,
+      showocean: true,
+      showland: true,
+      showlakes: true,
+    },
+    paper_bgcolor: '#ffffff',
+    plot_bgcolor: '#ffffff',
+    margin: {l: 0, r: 0, t: 0, b: 0},
+    showlegend: true,
+    legend: {
+      font: {color: '#555555', size: 11},
+      bgcolor: 'rgba(255,255,255,0.8)',
+    },
+  };
+
+  Plotly.newPlot('route-map', traces, layout, {responsive: true, displayModeBar: false});
+}
+
+function highlightRoute(idx) {
+  const mapDiv = document.getElementById('route-map');
+  if (!mapDiv.data) return;
+
+  const update = {};
+  mapDiv.data.forEach((trace, i) => {
+    const isTarget = trace.meta && trace.meta.routeIdx === idx;
+    const isPrimary = trace.meta && trace.meta.routeIdx !== undefined;
+    if (isPrimary) {
+      Plotly.restyle('route-map', {
+        opacity: isTarget ? 1.0 : 0.2,
+        'line.width': isTarget ? 3 : 1.5,
+      }, [i]);
+    }
+  });
+}
+
+/* ── Satellite Panel ── */
+function renderSatellitePanel(route) {
+  const sat = route.satellite;
+  const container = document.getElementById('sat-data');
+
+  if (!sat || !sat.gee_available) {
+    container.innerHTML = `
+      <div class="sat-offline">
+        <p>GEE Offline — Satellite data not available</p>
+        <p class="sat-note">Enable Google Earth Engine authentication to fetch real observations</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="sat-stat-grid">
+      <div class="sat-stat">
+        <div class="sat-val ${sat.no2_mean !== null ? '' : 'no-data'}">${sat.no2_mean !== null ? sat.no2_mean.toExponential(2) : '—'}</div>
+        <div class="sat-instrument">TROPOMI NO₂</div>
+        <div class="sat-unit">mol/m²</div>
+        <div class="sat-count">${sat.no2_count} readings</div>
+      </div>
+      <div class="sat-stat">
+        <div class="sat-val ${sat.sar_mean !== null ? '' : 'no-data'}">${sat.sar_mean !== null ? sat.sar_mean.toFixed(2) : '—'}</div>
+        <div class="sat-instrument">Sentinel-1 SAR</div>
+        <div class="sat-unit">VV dB</div>
+        <div class="sat-count">${sat.sar_count} readings</div>
+      </div>
+      <div class="sat-stat">
+        <div class="sat-val ${sat.sst_mean !== null ? '' : 'no-data'}">${sat.sst_mean !== null ? sat.sst_mean.toFixed(1) + '°C' : '—'}</div>
+        <div class="sat-instrument">NOAA OISST</div>
+        <div class="sat-unit">Sea Surface Temp</div>
+        <div class="sat-count">${sat.sst_count} readings</div>
+      </div>
+      <div class="sat-stat">
+        <div class="sat-val ${sat.co_mean !== null ? '' : 'no-data'}">${sat.co_mean !== null ? sat.co_mean.toExponential(2) : '—'}</div>
+        <div class="sat-instrument">TROPOMI CO</div>
+        <div class="sat-unit">mol/m²</div>
+        <div class="sat-count">${sat.co_count} readings</div>
+      </div>
+    </div>
+    <div class="sat-meta">
+      Sampled ${sat.waypoints_sampled} of ${sat.waypoints_total} waypoints along route
+    </div>
+  `;
+}
+
+/* ── ETS Panel ── */
+function renderETSPanel(route) {
+  const ets = route.ets;
+  const container = document.getElementById('ets-data');
+
+  if (!ets) {
+    container.innerHTML = '<p class="placeholder-text">No ETS data</p>';
+    return;
+  }
+
+  const exposureClass = ets.has_ets_exposure ? 'ets-exposed' : 'ets-clear';
+
+  container.innerHTML = `
+    <div class="ets-summary ${exposureClass}">
+      <div class="ets-headline">
+        <span class="ets-label">Total ETS Liability</span>
+        <span class="ets-val">€${ets.total_ets_cost_eur.toLocaleString()}</span>
+      </div>
+      <div class="ets-details">
+        <span>Liable CO₂: ${formatNum(ets.total_liable_co2_kg)} kg</span>
+        <span>Phase-in: ${(ets.phase_in_factor * 100).toFixed(0)}%</span>
+        <span>EUA Price: €${ets.eua_price_eur}/t</span>
+        <span>Year: ${ets.year}</span>
+      </div>
+    </div>
+    <table class="ets-table">
+      <thead><tr><th>Leg</th><th>Regulation</th><th>Scope</th><th>Liable CO₂</th><th>ETS Cost</th></tr></thead>
+      <tbody>
+        ${ets.legs.map(l => `
+          <tr>
+            <td>${l.from} → ${l.to}</td>
+            <td>${l.regulation}</td>
+            <td>${(l.ets_scope_pct * 100).toFixed(0)}%</td>
+            <td>${formatNum(l.liable_co2_kg)} kg</td>
+            <td>€${l.ets_cost_eur.toLocaleString()}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+/* ── Utility ── */
+function formatNum(n) {
+  if (n === null || n === undefined) return '—';
+  return Number(n).toLocaleString(undefined, {maximumFractionDigits: 1});
+}
+
+/* ── Initialize map on load ── */
+window.addEventListener('DOMContentLoaded', () => {
+  // Show empty world map
+  Plotly.newPlot('route-map', [], {
+    geo: {
+      projection: {type: 'orthographic', rotation: {lon: 60, lat: 20}},
+      bgcolor: '#ffffff',
+      landcolor: '#e8ebe4',
+      oceancolor: '#dce8f5',
+      lakecolor: '#dce8f5',
+      coastlinecolor: '#b0b8c0',
+      countrycolor: '#c8cdd4',
+      showframe: false,
+      showocean: true,
+      showland: true,
+      showlakes: true,
+    },
+    paper_bgcolor: '#ffffff',
+    plot_bgcolor: '#ffffff',
+    margin: {l: 0, r: 0, t: 0, b: 0},
+  }, {responsive: true, displayModeBar: false});
+});
+</script>
+{% endblock %}

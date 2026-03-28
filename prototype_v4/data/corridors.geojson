@@ -1,0 +1,88 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "sgp_rtm",
+        "name": "Singapore → Rotterdam",
+        "short": "SGP→RTM",
+        "distance_nm": 15000,
+        "partners": ["PSA Singapore", "Port of Rotterdam", "Maersk"],
+        "target_fuel": "Green methanol",
+        "target_year": 2030,
+        "declaration": "Clydebank",
+        "color": [0, 200, 83]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [103.8, 1.3],
+          [95.0, 5.5],
+          [80.3, 13.1],
+          [60.0, 18.0],
+          [43.5, 12.0],
+          [32.3, 29.9],
+          [25.0, 34.0],
+          [18.0, 38.0],
+          [10.0, 42.0],
+          [4.0, 52.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "la_sha",
+        "name": "LA → Shanghai",
+        "short": "LA→SHA",
+        "distance_nm": 5500,
+        "partners": ["Port of Los Angeles", "COSCO", "CMA CGM"],
+        "target_fuel": "Hydrogen / Ammonia",
+        "target_year": 2030,
+        "declaration": "Clydebank",
+        "color": [41, 121, 255]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-118.3, 33.7],
+          [-140.0, 30.0],
+          [-160.0, 25.0],
+          [180.0, 20.0],
+          [160.0, 25.0],
+          [140.0, 30.0],
+          [122.3, 31.2]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "dxb_ham",
+        "name": "Dubai → Hamburg",
+        "short": "DXB→HAM",
+        "distance_nm": 6400,
+        "partners": ["DP World", "Port of Hamburg", "Hapag-Lloyd"],
+        "target_fuel": "Bio-LNG / Ammonia",
+        "target_year": 2030,
+        "declaration": "Clydebank",
+        "color": [255, 109, 0]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [55.1, 25.0],
+          [57.0, 20.0],
+          [50.0, 13.5],
+          [43.5, 12.0],
+          [32.3, 29.9],
+          [25.0, 34.0],
+          [18.0, 38.0],
+          [8.0, 53.5],
+          [9.9, 53.5]
+        ]
+      }
+    }
+  ]
+}
