@@ -76,6 +76,31 @@ def _time_window(ts_str, days=7):
     return (t - timedelta(days=days)).strftime("%Y-%m-%d"), t.strftime("%Y-%m-%d")
 
 
+def _validate_and_print(instrument, value, lat, lon, ts):
+    """Print validation info and return value if plausible, else None."""
+    if value is None:
+        print(f"  {instrument}: no data at ({lat},{lon}) {ts}")
+        return None
+
+    # Plausibility checks (ranges are approximate, adjust as needed)
+    plausible = True
+    if instrument == "NO2" and (value <= 0 or value > 1e-3):
+        plausible = False
+    elif instrument == "SAR" and (value < -30 or value > 0):
+        plausible = False
+    elif instrument == "SST" and (value < -2 or value > 40):
+        plausible = False
+    elif instrument == "CO" and (value <= 0 or value > 0.1):
+        plausible = False
+
+    if plausible:
+        print(f"  {instrument}: real data = {value:.6f} at ({lat},{lon}) {ts}")
+        return value
+    else:
+        print(f"  {instrument}: WARNING - suspicious value {value:.6f} (may be pseudo-data) at ({lat},{lon}) {ts}")
+        return value  # Still return it, but flagged
+
+
 def fetch_no2(wp):
     """TROPOMI NO2 column density (mol/m2) at a waypoint."""
     if not is_available():
@@ -91,9 +116,10 @@ def fetch_no2(wp):
     )
     if col.size().getInfo() == 0:
         return None
-    return col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo().get(
+    val = col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo().get(
         "NO2_column_number_density"
     )
+    return _validate_and_print("NO2", val, wp["lat"], wp["lon"], wp["ts"])
 
 
 def fetch_sar(wp):
@@ -112,7 +138,8 @@ def fetch_sar(wp):
     )
     if col.size().getInfo() == 0:
         return None
-    return col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo().get("VV")
+    val = col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo().get("VV")
+    return _validate_and_print("SAR", val, wp["lat"], wp["lon"], wp["ts"])
 
 
 def fetch_sst(wp):
@@ -131,7 +158,8 @@ def fetch_sst(wp):
     if col.size().getInfo() == 0:
         return None
     raw = col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo().get("sst")
-    return raw * 0.01 if raw is not None else None
+    val = raw * 0.01 if raw is not None else None
+    return _validate_and_print("SST", val, wp["lat"], wp["lon"], wp["ts"])
 
 
 def fetch_co(wp):
@@ -149,9 +177,10 @@ def fetch_co(wp):
     )
     if col.size().getInfo() == 0:
         return None
-    return col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo().get(
+    val = col.first().reduceRegion(ee.Reducer.mean(), point, 1000).getInfo().get(
         "CO_column_number_density"
     )
+    return _validate_and_print("CO", val, wp["lat"], wp["lon"], wp["ts"])
 
 
 def enrich_waypoints(waypoints, sample_every=4):
@@ -183,6 +212,7 @@ def enrich_waypoints(waypoints, sample_every=4):
             cached = _cache_get(conn, wp["lat"], wp["lon"], wp["ts"], instrument)
             if cached is not None:
                 enriched["satellite"][instrument] = cached
+                print(f"  Using cached {instrument}: {cached:.6f} at ({wp['lat']},{wp['lon']}) {wp['ts']}")
             else:
                 try:
                     val = fetcher(wp)

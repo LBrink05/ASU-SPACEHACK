@@ -334,10 +334,22 @@ input[type="range"]::-webkit-slider-thumb {
   grid-template-rows: minmax(300px, 1fr) auto auto;
   gap: 1px;
   background: var(--border);
+
 }
 
 .map-panel {
   grid-column: 1 / -1;
+  display: grid;
+}
+
+.left-panel {
+  display: grid;
+  grid-column: 1;
+}
+
+.right-panel {
+  display: grid;
+  grid-column: 2;
 }
 
 .map-container {
