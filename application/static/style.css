@@ -306,17 +306,60 @@ html, body {
   margin-top: 16px;
 }
 
+.weights-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
 .weight-sliders h3 {
   font-size: 11px;
   color: var(--text-secondary);
   letter-spacing: 0.5px;
   text-transform: uppercase;
+  margin: 0;
+}
+.industry-btn {
+  margin-left: auto;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  transition: all 0.15s;
+}
+.industry-btn:hover {
+  background: var(--text-primary);
+  color: #fff;
+  border-color: var(--text-primary);
+}
+.industry-info-toggle {
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+.industry-info-toggle:hover { color: var(--text-secondary); }
+.industry-info-panel {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
   margin-bottom: 8px;
 }
+.industry-info-panel.hidden { display: none; }
 
 .slider-row {
   display: grid;
-  grid-template-columns: 90px 1fr 30px;
+  grid-template-columns: 130px 1fr 30px;
   align-items: center;
   gap: 8px;
   margin-bottom: 6px;
@@ -335,6 +378,68 @@ html, body {
   font-weight: 600;
   color: var(--text-primary);
   text-align: right;
+}
+
+/* ── Weight formula explanation ── */
+.weight-formula {
+  margin: 0 0 8px 0;
+  padding-left: 2px;
+}
+
+.weight-formula summary {
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  user-select: none;
+}
+
+.weight-formula summary:hover {
+  color: var(--text-secondary);
+}
+
+.weight-formula-body {
+  margin-top: 8px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.weight-formula-body p {
+  margin: 4px 0;
+}
+
+.weight-formula-body .formula {
+  font-family: 'Georgia', serif;
+  font-size: 12px;
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin: 6px 0;
+  text-align: center;
+}
+
+.weight-formula-body .frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 2px;
+}
+
+.weight-formula-body .frac .num {
+  border-bottom: 1px solid var(--text-secondary);
+  padding-bottom: 2px;
+}
+
+.weight-formula-body .frac .den {
+  padding-top: 2px;
+}
+
+.weight-formula-body strong {
+  color: var(--text-primary);
 }
 
 input[type="range"] {
@@ -453,6 +558,12 @@ input[type="range"]::-webkit-slider-thumb {
   height: 100%;
   min-height: 280px;
 }
+.map-network-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-left: auto;
+}
 
 .routes-panel {
   grid-column: 1 / -1;
@@ -523,9 +634,15 @@ input[type="range"]::-webkit-slider-thumb {
 
 .route-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 8px;
   margin-bottom: 10px;
+}
+.risk-margin {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: 2px;
 }
 
 .stat {
@@ -584,6 +701,26 @@ input[type="range"]::-webkit-slider-thumb {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.3px;
+}
+.route-meta-info {
+  margin-top: 4px;
+}
+.route-meta-info summary {
+  font-size: 10px;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+.route-meta-info summary::-webkit-details-marker { display: none; }
+.route-meta-info summary:hover { color: var(--text-secondary); }
+.route-meta-info-body {
+  margin-top: 4px;
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  text-align: left;
+  text-transform: none;
 }
 
 
@@ -710,6 +847,41 @@ input[type="range"]::-webkit-slider-thumb {
 .badge-cong-low      { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
 .badge-cong-moderate { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
 .badge-cong-high     { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+/* ── Satellite Info Icons ── */
+.sat-info {
+  display: block;
+  margin-top: 4px;
+}
+.sat-info summary {
+  font-size: 10px;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+.sat-info summary::-webkit-details-marker { display: none; }
+.sat-info summary:hover { color: var(--text-secondary); }
+.sat-info-body {
+  margin-top: 4px;
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  text-align: left;
+  text-transform: none;
+  font-weight: 400;
+  letter-spacing: normal;
+}
+.sat-info-inline {
+  display: inline;
+}
+.sat-info-inline summary {
+  display: inline;
+}
+.sat-info-inline .sat-info-body {
+  display: block;
+  margin-top: 6px;
+}
 
 /* ── Satellite Analysis Sections ── */
 .sat-section {

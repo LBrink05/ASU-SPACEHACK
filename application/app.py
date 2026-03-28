@@ -31,8 +31,10 @@ def _graph_nodes_dict():
 @app.route("/")
 def index():
     nodes = routing.node_options()
+    g = routing.get_graph()
+    edge_count = g.number_of_edges()
     gee_ok = gee_fetchers.init_gee()
-    return render_template("index.html", nodes=nodes, gee_available=gee_ok)
+    return render_template("index.html", nodes=nodes, edge_count=edge_count, gee_available=gee_ok)
 
 
 @app.route("/api/nodes")
@@ -104,6 +106,7 @@ def api_routes():
     w_compliance = float(data.get("w_compliance", 0.25))
     w_time = float(data.get("w_time", 0.15))
     w_satellite = float(data.get("w_satellite", 0.0))
+    w_disruption = float(data.get("w_disruption", 0.0))
     sat_mode = data.get("sat_mode", "offline")  # offline | online | synthetic
 
     # Single-leg or multi-leg routing
@@ -174,21 +177,124 @@ def api_routes():
         ets = ets_advisor.assess_route(route, graph_nodes)
         route["ets"] = ets
 
+        # ── Supply-chain disruption risk ──
+        sat = route["satellite"]
+        signals = []   # (value 0-1, weight)
+        n_available = 0
+
+        # Sea-state risk
+        if sat.get("sea_state") and sat["sea_state"].get("sea_risk_score") is not None:
+            signals.append((sat["sea_state"]["sea_risk_score"], 0.25))
+            n_available += 1
+        else:
+            signals.append((0.15, 0.25))  # mild prior
+
+        # Port congestion
+        pc = sat.get("port_congestion") or []
+        if pc:
+            lvl_map = {"high": 1.0, "moderate": 0.5, "low": 0.1, "unknown": 0.3}
+            pc_score = sum(lvl_map.get(p.get("congestion_level", "unknown"), 0.3) for p in pc) / len(pc)
+            signals.append((pc_score, 0.20))
+            n_available += 1
+        else:
+            signals.append((0.2, 0.20))
+
+        # Corridor pollution (congestion proxy)
+        aq = sat.get("air_quality")
+        if aq and aq.get("polluted_pct") is not None:
+            signals.append((aq["polluted_pct"] / 100.0, 0.15))
+            n_available += 1
+        else:
+            signals.append((0.15, 0.15))
+
+        # Tropical storm proxy
+        if sat.get("sea_state") and sat["sea_state"].get("sst_storm_risk") is not None:
+            signals.append((1.0 if sat["sea_state"]["sst_storm_risk"] else 0.0, 0.15))
+            n_available += 1
+        else:
+            signals.append((0.1, 0.15))
+
+        # Transit time exposure
+        td = route.get("total_transit_days", 0)
+        signals.append((min(td / 30.0, 1.0), 0.15))
+        n_available += 1
+
+        # Regulatory compliance (inverted: low compliance = risk)
+        comp = route.get("avg_compliance_score", 0.9)
+        signals.append((1.0 - comp, 0.10))
+        n_available += 1
+
+        total_w = sum(w for _, w in signals)
+        risk_score = sum(v * w for v, w in signals) / total_w if total_w else 0.0
+        risk_pct = round(risk_score * 100, 1)
+
+        # Margin of error: narrows as more real signals are available
+        max_signals = 6
+        margin = round(3.0 + 12.0 * (1.0 - n_available / max_signals), 1)
+
+        route["disruption_risk"] = {
+            "pct": risk_pct,
+            "margin": margin,
+            "signals_available": n_available,
+            "signals_total": max_signals,
+        }
+
         # Waypoint coordinates for map (just lat/lon, not full enriched data)
         route["waypoint_coords"] = [
             {"lat": wp["lat"], "lon": wp["lon"]}
             for wp in all_waypoints[::2]  # every other point for rendering
         ]
 
-    # Post-hoc satellite-aware re-ranking
-    if w_satellite > 0:
-        for route in routes:
+    # Post-hoc blended re-ranking (satellite + disruption risk)
+    if (w_satellite > 0 or w_disruption > 0) and len(routes) > 1:
+        # Compute a normalised base score for each route from cost/time/CO2/compliance
+        co2_vals  = [r["total_co2_kg"]          for r in routes]
+        cost_vals = [r["total_cost_usd"]        for r in routes]
+        time_vals = [r["total_transit_days"]     for r in routes]
+        comp_vals = [r["avg_compliance_score"]   for r in routes]
+
+        def _minmax(vals):
+            lo, hi = min(vals), max(vals)
+            return [(v - lo) / (hi - lo) if hi > lo else 0.0 for v in vals]
+
+        norm_co2  = _minmax(co2_vals)
+        norm_cost = _minmax(cost_vals)
+        norm_time = _minmax(time_vals)
+        # Compliance: higher = better, invert so lower = better score
+        norm_comp = [1.0 - c for c in _minmax(comp_vals)]
+
+        tw = w_emissions + w_cost + w_compliance + w_time
+        if tw == 0:
+            tw = 1.0
+
+        w_post = min(w_satellite + w_disruption, 1.0)
+
+        for i, route in enumerate(routes):
+            base = (
+                w_emissions  * norm_co2[i]
+                + w_cost     * norm_cost[i]
+                + w_compliance * norm_comp[i]
+                + w_time     * norm_time[i]
+            ) / tw
+
+            # Satellite environmental risk
             risk = route["satellite"].get("satellite_risk_score")
-            route["_sat_penalty"] = risk if risk is not None else 0.5
-        routes.sort(key=lambda r: r["_sat_penalty"])
+            sat_score = risk if risk is not None else 0.5
+
+            # Disruption risk
+            dr = route.get("disruption_risk", {}).get("pct", 15.0) / 100.0
+
+            # Weighted post-hoc blend
+            post_score = 0.0
+            if w_post > 0:
+                post_score = (w_satellite * sat_score + w_disruption * dr) / w_post
+
+            route["_blend"] = (1.0 - w_post) * base + w_post * post_score
+
+        routes.sort(key=lambda r: r["_blend"])
         for rank, route in enumerate(routes, start=1):
             route["rank"] = rank
-            route.pop("_sat_penalty", None)
+            route.pop("_blend", None)
 
     return jsonify({"routes": routes})
 

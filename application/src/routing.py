@@ -107,8 +107,10 @@ def _edge_cost(u, v, data, w_emissions, w_cost, w_compliance, w_time, cargo_t):
     inv_compliance = 1.0 - data["compliance_score"]
     transit = data["transit_days"]
 
-    co2_scale = 2000.0
-    cost_scale = 5000.0
+    # Cargo-adaptive scaling: normalisation anchored at 100 T baseline
+    cargo_factor = max(cargo_t / 100.0, 0.1)
+    co2_scale = 2000.0 * cargo_factor
+    cost_scale = 5000.0 * cargo_factor
     time_scale = 30.0
 
     norm_co2 = min(co2_kg / co2_scale, 3.0)

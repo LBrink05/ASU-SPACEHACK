@@ -67,32 +67,114 @@
     <input type="number" id="cargo-t" value="100" min="1" step="1">
 
     <div class="weight-sliders">
-      <h3>Optimization Weights</h3>
+      <div class="weights-header">
+        <h3>Optimization Weights</h3>
+        <button type="button" class="industry-btn" onclick="applyIndustryWeights()" title="Apply industry-standard weights">Industry Standard</button>
+        <span class="industry-info-toggle" onclick="this.closest('.weight-sliders').querySelector('.industry-info-panel').classList.toggle('hidden')" title="How we chose these weights">&#9432;</span>
+      </div>
+      <div class="industry-info-panel hidden">
+        Based on IMO 2023 GHG Strategy targets, EU ETS Maritime Phase III (2026), and UNCTAD Transport &amp; Trade Facilitation benchmarks. Weights reflect a balanced decarbonisation-first approach used by major 3PL operators: emissions prioritised at 30%, cost and compliance at 25% each, transit time at 15%, with moderate satellite environmental monitoring (20%) and disruption risk awareness (15%).
+      </div>
+
       <div class="slider-row">
         <label>Emissions</label>
         <input type="range" id="w-emissions" min="0" max="100" value="35">
         <span class="slider-val" id="v-emissions">35</span>
       </div>
+      <details class="weight-formula">
+        <summary>How it works</summary>
+        <div class="weight-formula-body">
+          <p class="formula">
+            CO<sub>2</sub> = <span class="frac"><span class="num">g/tkm &times; distance &times; cargo</span><span class="den">1000</span></span>
+          </p>
+          <p>Normalised as CO<sub>2</sub>&thinsp;/&thinsp;(2000 &times; cargo factor), capped at 3.0. Higher weight penalises high-emission legs (air &gt; truck &gt; rail &gt; ocean).</p>
+        </div>
+      </details>
+
       <div class="slider-row">
         <label>Cost</label>
         <input type="range" id="w-cost" min="0" max="100" value="25">
         <span class="slider-val" id="v-cost">25</span>
       </div>
+      <details class="weight-formula">
+        <summary>How it works</summary>
+        <div class="weight-formula-body">
+          <p class="formula">
+            Cost = USD/tonne &times; cargo weight
+          </p>
+          <p>Normalised as Cost&thinsp;/&thinsp;($5 000 &times; cargo factor), capped at 3.0. Scaling adapts to cargo tonnage so routes differentiate at any shipment size.</p>
+        </div>
+      </details>
+
       <div class="slider-row">
-        <label>Compliance</label>
+        <label>Regulatory Compliance</label>
         <input type="range" id="w-compliance" min="0" max="100" value="25">
         <span class="slider-val" id="v-compliance">25</span>
       </div>
+      <details class="weight-formula">
+        <summary>How it works</summary>
+        <div class="weight-formula-body">
+          <p class="formula">
+            Penalty = 1 &minus; compliance score
+          </p>
+          <p>Each corridor carries an IMO/EU regulatory compliance score (0&ndash;1). The penalty inverts it: low-compliance legs receive a higher cost. Ranges from 0.61 (developing corridors) to 1.0 (premium EU/rail).</p>
+        </div>
+      </details>
+
       <div class="slider-row">
         <label>Transit Time</label>
         <input type="range" id="w-time" min="0" max="100" value="15">
         <span class="slider-val" id="v-time">15</span>
       </div>
+      <details class="weight-formula">
+        <summary>How it works</summary>
+        <div class="weight-formula-body">
+          <p class="formula">
+            Time = transit days&thinsp;/&thinsp;30
+          </p>
+          <p>Normalised against a 30-day baseline, capped at 3.0. Higher weight favours faster routes &mdash; short-haul air (0.1 d) vs long-haul ocean (35 d).</p>
+        </div>
+      </details>
+
       <div class="slider-row">
-        <label>Satellite Risk</label>
+        <label>Environmental Risk</label>
         <input type="range" id="w-satellite" min="0" max="100" value="0">
         <span class="slider-val" id="v-satellite">0</span>
       </div>
+      <details class="weight-formula">
+        <summary>How it works</summary>
+        <div class="weight-formula-body">
+          <p class="formula">
+            Final = (1 &minus; w<sub>sat</sub>) &middot; Base + w<sub>sat</sub> &middot; Risk
+          </p>
+          <p>Blends satellite-derived risk into the route ranking. Risk Score combines NO<sub>2</sub>/CO emissions verification, SAR sea-state roughness, and port congestion from satellite imagery. Set to 0 for cost-only ranking.</p>
+        </div>
+      </details>
+
+      <div class="slider-row">
+        <label>Disruption Risk</label>
+        <input type="range" id="w-disruption" min="0" max="100" value="0">
+        <span class="slider-val" id="v-disruption">0</span>
+      </div>
+      <details class="weight-formula">
+        <summary>How it works</summary>
+        <div class="weight-formula-body">
+          <p class="formula">
+            Final = (1 &minus; w<sub>d</sub>) &middot; Base + w<sub>d</sub> &middot; Disruption%
+          </p>
+          <p>Blends the per-route disruption risk score into ranking. Disruption Risk is computed from 6 signals: sea-state, port congestion, corridor pollution, storm risk, transit exposure, and regulatory compliance. Higher weight penalises routes with elevated disruption probability.</p>
+        </div>
+      </details>
+
+      <details class="weight-formula" style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 8px;">
+        <summary>Combined edge scoring</summary>
+        <div class="weight-formula-body">
+          <p class="formula">
+            Edge Score = <span class="frac"><span class="num">w<sub>e</sub> &middot; CO<sub>2</sub> + w<sub>c</sub> &middot; Cost + w<sub>r</sub> &middot; (1&minus;Comp) + w<sub>t</sub> &middot; Days</span><span class="den">w<sub>e</sub> + w<sub>c</sub> + w<sub>r</sub> + w<sub>t</sub></span></span>
+          </p>
+          <p>Weights are relative &mdash; only ratios matter. The optimizer finds k-shortest paths using this composite edge cost, then optionally re-ranks by environmental risk and disruption risk.</p>
+        </div>
+      </details>
     </div>
 
     <div class="sat-mode-row">
@@ -122,6 +204,7 @@
         <label class="overlay-toggle"><input type="checkbox" id="chk-corridors" checked onchange="redrawMap()"> Green Corridors</label>
         <label class="overlay-toggle"><input type="checkbox" id="chk-ports-geo" checked onchange="redrawMap()"> Major Ports</label>
         <label class="overlay-toggle"><input type="checkbox" id="chk-warnings" checked onchange="redrawMap()"> Warning Zones</label>
+        <div class="map-network-badge">{{ nodes | length }} nodes &middot; {{ edge_count }} edges</div>
         <div class="click-mode-group">
           <span class="click-label">Click map:</span>
           <button id="btn-click-origin" class="click-btn active" onclick="setClickMode('origin')">Set Origin</button>
@@ -261,6 +344,20 @@ document.querySelectorAll('.slider-row input[type=range]').forEach(s => {
   s.addEventListener('input', () => { span.textContent = s.value; });
 });
 
+/* ── Industry-standard weights preset ── */
+function applyIndustryWeights() {
+  const preset = {
+    'w-emissions': 30, 'w-cost': 25, 'w-compliance': 25,
+    'w-time': 15, 'w-satellite': 20, 'w-disruption': 15
+  };
+  for (const [id, val] of Object.entries(preset)) {
+    const input = document.getElementById(id);
+    const span = input.parentElement.querySelector('.slider-val');
+    input.value = val;
+    span.textContent = val;
+  }
+}
+
 /* ── Satellite mode toggle ── */
 let satMode = 'synthetic';
 document.querySelectorAll('.sat-mode-btn').forEach(btn => {
@@ -287,6 +384,7 @@ async function findRoutes() {
     w_compliance: parseInt(document.getElementById('w-compliance').value) / 100,
     w_time: parseInt(document.getElementById('w-time').value) / 100,
     w_satellite: parseInt(document.getElementById('w-satellite').value) / 100,
+    w_disruption: parseInt(document.getElementById('w-disruption').value) / 100,
     sat_mode: satMode,
   };
 
@@ -365,18 +463,37 @@ function renderRouteCards(routes) {
           <div class="stat">
             <span class="stat-val">${formatNum(r.total_co2_kg)} kg</span>
             <span class="stat-label">CO₂</span>
+            <details class="route-meta-info"><summary>&#9432;</summary>
+              <div class="route-meta-info-body">Total CO&#8322; emissions across all legs, scaled by cargo weight. Combines per-edge emission factors for each transport mode (sea, rail, road, air).</div>
+            </details>
           </div>
           <div class="stat">
             <span class="stat-val">$${formatNum(r.total_cost_usd)}</span>
             <span class="stat-label">Cost</span>
+            <details class="route-meta-info"><summary>&#9432;</summary>
+              <div class="route-meta-info-body">Total logistics cost in USD across all legs, including freight, fuel surcharge, and handling. Scaled by cargo tonnage.</div>
+            </details>
           </div>
           <div class="stat">
             <span class="stat-val">${r.total_transit_days}d</span>
             <span class="stat-label">Transit</span>
+            <details class="route-meta-info"><summary>&#9432;</summary>
+              <div class="route-meta-info-body">End-to-end transit time in days, summing the travel duration of each leg based on mode speed and distance.</div>
+            </details>
           </div>
           <div class="stat">
             <span class="stat-val">${formatNum(r.total_distance_km)} km</span>
             <span class="stat-label">Distance</span>
+            <details class="route-meta-info"><summary>&#9432;</summary>
+              <div class="route-meta-info-body">Total route distance in kilometres, computed as the sum of great-circle or network distances for each leg.</div>
+            </details>
+          </div>
+          <div class="stat stat-risk">
+            <span class="stat-val ${r.disruption_risk.pct > 40 ? 'risk-high' : r.disruption_risk.pct > 20 ? 'risk-mid' : 'risk-low'}">${r.disruption_risk.pct}%<span class="risk-margin">&plusmn;${r.disruption_risk.margin}%</span></span>
+            <span class="stat-label">Disruption Risk</span>
+            <details class="route-meta-info"><summary>&#9432;</summary>
+              <div class="route-meta-info-body">Composite supply-chain disruption probability from ${r.disruption_risk.signals_available}/${r.disruption_risk.signals_total} signals: sea-state, port congestion, corridor pollution, storm risk, transit exposure, and regulatory compliance. Margin narrows with more satellite data.</div>
+            </details>
           </div>
         </div>
         <div class="route-meta">
@@ -385,14 +502,23 @@ function renderRouteCards(routes) {
               ? `<div class="route-meta-val ${r.satellite.satellite_risk_score > 0.6 ? 'risk-high' : r.satellite.satellite_risk_score > 0.3 ? 'risk-mid' : 'risk-low'}">${(r.satellite.satellite_risk_score * 100).toFixed(0)}%</div>`
               : `<div class="route-meta-val" style="color:var(--text-muted)">--</div>`}
             <div class="route-meta-label">Sat Risk</div>
+            <details class="route-meta-info"><summary>&#9432;</summary>
+              <div class="route-meta-info-body">Weighted average of emissions verification (NO&#8322;/CO), sea-state roughness, and port congestion derived from satellite imagery. 0% = clean, 100% = high risk.</div>
+            </details>
           </div>
           <div class="route-meta-cell">
             <div class="route-meta-val ets">${etsCost}</div>
             <div class="route-meta-label">ETS Cost</div>
+            <details class="route-meta-info"><summary>&#9432;</summary>
+              <div class="route-meta-info-body">EU Emissions Trading System allowance cost. 100% phase-in for 2026 at &euro;70/tonne CO&#8322;. Applies only to route legs within EU ETS scope.</div>
+            </details>
           </div>
           <div class="route-meta-cell">
             <div class="route-meta-val offset">$${formatNum(r.total_co2_kg / 1000 * 25)}</div>
             <div class="route-meta-label">Carbon Offset</div>
+            <details class="route-meta-info"><summary>&#9432;</summary>
+              <div class="route-meta-info-body">Estimated voluntary carbon offset cost at $25/tonne CO&#8322;, calculated from total route emissions.</div>
+            </details>
           </div>
         </div>
         <table class="leg-table">
@@ -660,27 +786,39 @@ function renderSatellitePanel(route) {
     <div class="sat-stat-grid">
       <div class="sat-stat">
         <div class="sat-val ${sat.no2_mean !== null ? '' : 'no-data'}">${sat.no2_mean !== null ? sat.no2_mean.toExponential(2) : '—'}</div>
-        <div class="sat-instrument">TROPOMI NO₂</div>
+        <div class="sat-instrument">TROPOMI NO&#8322;</div>
         <div class="sat-unit">mol/m²</div>
         <div class="sat-count">${sat.no2_count} readings</div>
+        <details class="sat-info"><summary>&#9432;</summary>
+          <div class="sat-info-body">Nitrogen dioxide column density from the Sentinel-5P TROPOMI sensor. High NO&#8322; indicates ship exhaust or industrial emissions along the route corridor.</div>
+        </details>
       </div>
       <div class="sat-stat">
         <div class="sat-val ${sat.sar_mean !== null ? '' : 'no-data'}">${sat.sar_mean !== null ? sat.sar_mean.toFixed(2) : '—'}</div>
         <div class="sat-instrument">Sentinel-1 SAR</div>
         <div class="sat-unit">VV dB</div>
         <div class="sat-count">${sat.sar_count} readings</div>
+        <details class="sat-info"><summary>&#9432;</summary>
+          <div class="sat-info-body">Synthetic Aperture Radar backscatter (VV polarisation) from Sentinel-1. Higher dB values indicate rougher sea surface, which increases fuel consumption and delays.</div>
+        </details>
       </div>
       <div class="sat-stat">
         <div class="sat-val ${sat.sst_mean !== null ? '' : 'no-data'}">${sat.sst_mean !== null ? sat.sst_mean.toFixed(1) + '°C' : '—'}</div>
         <div class="sat-instrument">NOAA OISST</div>
         <div class="sat-unit">Sea Surface Temp</div>
         <div class="sat-count">${sat.sst_count} readings</div>
+        <details class="sat-info"><summary>&#9432;</summary>
+          <div class="sat-info-body">Sea surface temperature from the NOAA Optimum Interpolation SST dataset. Anomalous temperatures can signal unusual ocean currents or weather patterns affecting transit.</div>
+        </details>
       </div>
       <div class="sat-stat">
         <div class="sat-val ${sat.co_mean !== null ? '' : 'no-data'}">${sat.co_mean !== null ? sat.co_mean.toExponential(2) : '—'}</div>
         <div class="sat-instrument">TROPOMI CO</div>
         <div class="sat-unit">mol/m²</div>
         <div class="sat-count">${sat.co_count} readings</div>
+        <details class="sat-info"><summary>&#9432;</summary>
+          <div class="sat-info-body">Carbon monoxide column density from Sentinel-5P TROPOMI. Elevated CO levels indicate incomplete combustion from shipping or nearby industrial activity.</div>
+        </details>
       </div>
     </div>
     <div class="sat-meta">
@@ -688,7 +826,7 @@ function renderSatellitePanel(route) {
     </div>
     ${sat.satellite_risk_score !== null && sat.satellite_risk_score !== undefined ? `
     <div class="sat-section">
-      <div class="sat-section-title">Composite Satellite Risk</div>
+      <div class="sat-section-title">Multi-Sensor Environmental Risk <details class="sat-info sat-info-inline"><summary>&#9432;</summary><div class="sat-info-body">Weighted composite of NO&#8322;/CO emissions verification, SAR sea-state roughness, and port congestion. 0% = clean corridor, 100% = high environmental risk.</div></details></div>
       <div class="sat-risk-bar-wrap">
         <div class="sat-risk-bar" style="width:${(sat.satellite_risk_score * 100).toFixed(0)}%; background:${sat.satellite_risk_score > 0.6 ? '#dc2626' : sat.satellite_risk_score > 0.3 ? '#ea580c' : '#16a34a'}"></div>
       </div>
@@ -696,7 +834,7 @@ function renderSatellitePanel(route) {
     </div>` : ''}
     ${sat.emissions_verification ? `
     <div class="sat-section">
-      <div class="sat-section-title">Emissions Verification</div>
+      <div class="sat-section-title">Emissions Verification <details class="sat-info sat-info-inline"><summary>&#9432;</summary><div class="sat-info-body">Cross-checks route-corridor NO&#8322; and CO levels against clean-air baselines. Routes through pollution hotspots receive lower verification scores.</div></details></div>
       <div class="sat-ev-row">
         <span class="badge badge-${sat.emissions_verification.pollution_band === 'low' ? 'ok' : 'warn'}">${sat.emissions_verification.pollution_band === 'low' ? 'Verified Clean' : 'Hotspots Detected'}</span>
         <span class="sat-ev-score">Score: ${(sat.emissions_verification.verification_score * 100).toFixed(0)}%</span>
@@ -708,18 +846,18 @@ function renderSatellitePanel(route) {
     </div>` : ''}
     ${sat.sea_state ? `
     <div class="sat-section">
-      <div class="sat-section-title">Sea-State Risk</div>
+      <div class="sat-section-title">Sea-State Risk <details class="sat-info sat-info-inline"><summary>&#9432;</summary><div class="sat-info-body">Derived from Sentinel-1 SAR backscatter. Classifies ocean segments as calm, moderate, or rough based on radar return intensity.</div></details></div>
       <span class="badge badge-sea-${sat.sea_state.risk_level}">${sat.sea_state.risk_level === 'rough' ? 'Rough' : sat.sea_state.risk_level === 'moderate' ? 'Moderate' : 'Calm'}</span>
       ${sat.sea_state.rough_count > 0 ? `<span class="sat-sea-detail">${sat.sea_state.rough_count} rough waypoint(s)</span>` : ''}
     </div>` : ''}
     ${sat.port_congestion && sat.port_congestion.length ? `
     <div class="sat-section">
-      <div class="sat-section-title">Port Congestion</div>
+      <div class="sat-section-title">Port Congestion <details class="sat-info sat-info-inline"><summary>&#9432;</summary><div class="sat-info-body">Estimates vessel density at origin, destination, and waypoint ports using SAR ship-detection counts. Higher congestion may increase dwell time and costs.</div></details></div>
       ${sat.port_congestion.map(p => `<span class="badge badge-cong-${p.congestion_level}">${p.port}: ${p.congestion_level}</span> `).join('')}
     </div>` : ''}
     ${sat.air_quality ? `
     <div class="sat-section">
-      <div class="sat-section-title">Air Quality Report</div>
+      <div class="sat-section-title">Air Quality Report <details class="sat-info sat-info-inline"><summary>&#9432;</summary><div class="sat-info-body">Classifies each route waypoint as clean, moderate, or polluted based on combined NO&#8322; and CO thresholds from TROPOMI. Summarised as a percentage breakdown.</div></details></div>
       <div class="aq-tier-bar">
         <div class="aq-tier aq-clean" style="width:${sat.air_quality.clean_pct}%">${sat.air_quality.clean_pct > 5 ? sat.air_quality.clean_pct + '%' : ''}</div>
         <div class="aq-tier aq-moderate" style="width:${sat.air_quality.moderate_pct}%">${sat.air_quality.moderate_pct > 5 ? sat.air_quality.moderate_pct + '%' : ''}</div>
