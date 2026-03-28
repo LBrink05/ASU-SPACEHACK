@@ -35,7 +35,7 @@ def _load_graph() -> nx.DiGraph:
         )
 
     for edge in edges_doc["edges"]:
-        if "from" not in edge:
+        if "from" not in edge or "to" not in edge:
             continue
         g.add_edge(
             edge["from"],
@@ -47,6 +47,7 @@ def _load_graph() -> nx.DiGraph:
             co2_g_per_tonne_km=edge["co2_g_per_tonne_km"],
             compliance_score=edge["compliance_score"],
             ets_scope=edge.get("ets_scope", False),
+            waypoints=edge.get("waypoints", None),
         )
 
     return g
@@ -179,6 +180,7 @@ def _summarize_path(path, graph, cargo_t):
             "transit_days": data["transit_days"],
             "ets_scope": data.get("ets_scope", False),
             "compliance_score": data["compliance_score"],
+            "waypoints": data.get("waypoints", None),
         })
 
     avg_compliance = sum(compliance_scores) / len(compliance_scores) if compliance_scores else 0

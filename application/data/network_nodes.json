@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "2.0",
+    "version": "3.0",
     "node_types": [
       "city",
       "port",
@@ -2026,6 +2026,501 @@
       "lon": 19.04,
       "region": "europe",
       "ets_scope": true
+    },
+    {
+      "id": "port_dakar",
+      "label": "Port of Dakar",
+      "type": "port",
+      "lat": 14.69,
+      "lon": -17.44,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "dakar",
+      "label": "Dakar, Senegal",
+      "type": "city",
+      "lat": 14.72,
+      "lon": -17.47,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "port_douala",
+      "label": "Port of Douala",
+      "type": "port",
+      "lat": 4.04,
+      "lon": 9.7,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "port_luanda",
+      "label": "Port of Luanda",
+      "type": "port",
+      "lat": -8.84,
+      "lon": 13.23,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "luanda",
+      "label": "Luanda, Angola",
+      "type": "city",
+      "lat": -8.84,
+      "lon": 13.23,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "port_walvis_bay",
+      "label": "Port of Walvis Bay",
+      "type": "port",
+      "lat": -22.96,
+      "lon": 14.51,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "port_cape_town",
+      "label": "Port of Cape Town",
+      "type": "port",
+      "lat": -33.9,
+      "lon": 18.44,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "port_port_elizabeth",
+      "label": "Port of Port Elizabeth",
+      "type": "port",
+      "lat": -33.76,
+      "lon": 25.67,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "port_beira",
+      "label": "Port of Beira",
+      "type": "port",
+      "lat": -19.84,
+      "lon": 34.87,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "kampala",
+      "label": "Kampala, Uganda",
+      "type": "city",
+      "lat": 0.31,
+      "lon": 32.58,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "kigali",
+      "label": "Kigali, Rwanda",
+      "type": "city",
+      "lat": -1.94,
+      "lon": 29.87,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "dar_es_salaam",
+      "label": "Dar es Salaam",
+      "type": "city",
+      "lat": -6.79,
+      "lon": 39.28,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "port_alexandria",
+      "label": "Port of Alexandria",
+      "type": "port",
+      "lat": 31.2,
+      "lon": 29.92,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "port_algiers",
+      "label": "Port of Algiers",
+      "type": "port",
+      "lat": 36.75,
+      "lon": 3.06,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "algiers",
+      "label": "Algiers, Algeria",
+      "type": "city",
+      "lat": 36.75,
+      "lon": 3.06,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "tunis",
+      "label": "Tunis, Tunisia",
+      "type": "city",
+      "lat": 36.81,
+      "lon": 10.17,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "port_tunis",
+      "label": "Port of Tunis",
+      "type": "port",
+      "lat": 36.81,
+      "lon": 10.17,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "kinshasa",
+      "label": "Kinshasa, DRC",
+      "type": "city",
+      "lat": -4.32,
+      "lon": 15.31,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "lusaka",
+      "label": "Lusaka, Zambia",
+      "type": "city",
+      "lat": -15.39,
+      "lon": 28.32,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "harare",
+      "label": "Harare, Zimbabwe",
+      "type": "city",
+      "lat": -17.83,
+      "lon": 31.05,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "almaty",
+      "label": "Almaty, Kazakhstan",
+      "type": "city",
+      "lat": 43.24,
+      "lon": 76.95,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "tashkent",
+      "label": "Tashkent, Uzbekistan",
+      "type": "city",
+      "lat": 41.3,
+      "lon": 69.28,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "novosibirsk",
+      "label": "Novosibirsk, Russia",
+      "type": "city",
+      "lat": 55.03,
+      "lon": 82.92,
+      "region": "europe",
+      "ets_scope": false
+    },
+    {
+      "id": "yekaterinburg",
+      "label": "Yekaterinburg, Russia",
+      "type": "city",
+      "lat": 56.84,
+      "lon": 60.6,
+      "region": "europe",
+      "ets_scope": false
+    },
+    {
+      "id": "vladivostok",
+      "label": "Vladivostok, Russia",
+      "type": "city",
+      "lat": 43.12,
+      "lon": 131.87,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "port_vladivostok",
+      "label": "Port of Vladivostok",
+      "type": "port",
+      "lat": 43.12,
+      "lon": 131.87,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "port_colon",
+      "label": "Port of Colon (Panama)",
+      "type": "port",
+      "lat": 9.36,
+      "lon": -79.9,
+      "region": "south_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_balboa",
+      "label": "Port of Balboa (Panama)",
+      "type": "port",
+      "lat": 8.97,
+      "lon": -79.56,
+      "region": "south_america",
+      "ets_scope": false
+    },
+    {
+      "id": "montevideo",
+      "label": "Montevideo, Uruguay",
+      "type": "city",
+      "lat": -34.88,
+      "lon": -56.17,
+      "region": "south_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_montevideo",
+      "label": "Port of Montevideo",
+      "type": "port",
+      "lat": -34.88,
+      "lon": -56.17,
+      "region": "south_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_hai_phong",
+      "label": "Port of Hai Phong",
+      "type": "port",
+      "lat": 20.86,
+      "lon": 106.68,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "port_sihanoukville",
+      "label": "Port of Sihanoukville",
+      "type": "port",
+      "lat": 10.63,
+      "lon": 103.5,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "port_yangon",
+      "label": "Port of Yangon",
+      "type": "port",
+      "lat": 16.5,
+      "lon": 96.16,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "port_karachi",
+      "label": "Port of Karachi",
+      "type": "port",
+      "lat": 24.85,
+      "lon": 67.01,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "port_colombo_deep",
+      "label": "Colombo Deep Water Terminal",
+      "type": "port",
+      "lat": 6.95,
+      "lon": 79.85,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "port_aqaba",
+      "label": "Port of Aqaba",
+      "type": "port",
+      "lat": 29.53,
+      "lon": 35.01,
+      "region": "middle_east",
+      "ets_scope": false
+    },
+    {
+      "id": "port_bandar_abbas",
+      "label": "Port of Bandar Abbas",
+      "type": "port",
+      "lat": 27.19,
+      "lon": 56.28,
+      "region": "middle_east",
+      "ets_scope": false
+    },
+    {
+      "id": "port_salalah_new",
+      "label": "Port of Salalah",
+      "type": "port",
+      "lat": 16.95,
+      "lon": 54.0,
+      "region": "middle_east",
+      "ets_scope": false
+    },
+    {
+      "id": "port_muscat",
+      "label": "Port of Muscat",
+      "type": "port",
+      "lat": 23.63,
+      "lon": 58.59,
+      "region": "middle_east",
+      "ets_scope": false
+    },
+    {
+      "id": "port_kuwait",
+      "label": "Port of Kuwait",
+      "type": "port",
+      "lat": 29.36,
+      "lon": 47.97,
+      "region": "middle_east",
+      "ets_scope": false
+    },
+    {
+      "id": "kuwait_city",
+      "label": "Kuwait City",
+      "type": "city",
+      "lat": 29.38,
+      "lon": 47.99,
+      "region": "middle_east",
+      "ets_scope": false
+    },
+    {
+      "id": "port_constanta",
+      "label": "Port of Constanta",
+      "type": "port",
+      "lat": 44.17,
+      "lon": 28.65,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "port_koper",
+      "label": "Port of Koper",
+      "type": "port",
+      "lat": 45.55,
+      "lon": 13.73,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "port_thessaloniki",
+      "label": "Port of Thessaloniki",
+      "type": "port",
+      "lat": 40.63,
+      "lon": 22.94,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "port_gdynia",
+      "label": "Port of Gdynia",
+      "type": "port",
+      "lat": 54.53,
+      "lon": 18.55,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "prague",
+      "label": "Prague, Czech Republic",
+      "type": "city",
+      "lat": 50.08,
+      "lon": 14.44,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "vienna",
+      "label": "Vienna, Austria",
+      "type": "city",
+      "lat": 48.21,
+      "lon": 16.37,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "port_tauranga",
+      "label": "Port of Tauranga",
+      "type": "port",
+      "lat": -37.65,
+      "lon": 176.17,
+      "region": "oceania",
+      "ets_scope": false
+    },
+    {
+      "id": "port_suva",
+      "label": "Port of Suva, Fiji",
+      "type": "port",
+      "lat": -18.14,
+      "lon": 178.44,
+      "region": "oceania",
+      "ets_scope": false
+    },
+    {
+      "id": "port_port_moresby",
+      "label": "Port of Port Moresby",
+      "type": "port",
+      "lat": -9.47,
+      "lon": 147.15,
+      "region": "oceania",
+      "ets_scope": false
+    },
+    {
+      "id": "laredo",
+      "label": "Laredo, Texas (Border)",
+      "type": "city",
+      "lat": 27.51,
+      "lon": -99.51,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_veracruz",
+      "label": "Port of Veracruz",
+      "type": "port",
+      "lat": 19.18,
+      "lon": -96.13,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_prince_rupert",
+      "label": "Port of Prince Rupert",
+      "type": "port",
+      "lat": 54.32,
+      "lon": -130.32,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_marseille",
+      "label": "Port of Marseille-Fos",
+      "type": "port",
+      "lat": 43.35,
+      "lon": 5.3,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "port_fremantle",
+      "label": "Port of Fremantle (Perth)",
+      "type": "port",
+      "lat": -32.06,
+      "lon": 115.75,
+      "region": "oceania",
+      "ets_scope": false
     }
   ]
 }

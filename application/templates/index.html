@@ -238,6 +238,10 @@
       <div id="ets-data" class="ets-content">
         <p class="placeholder-text">ETS assessment will appear after route search</p>
       </div>
+      <div id="ets-chart-wrap" class="ets-chart-wrap hidden">
+        <div class="ets-chart-title">Cumulative Emissions &amp; Cost Along Route <details class="sat-info sat-info-inline"><summary>&#9432;</summary><div class="sat-info-body">Shows how total CO&#8322;, ETS-liable CO&#8322;, and ETS cost accumulate leg-by-leg from origin to destination. The shaded area highlights emissions not subject to EU ETS.</div></details></div>
+        <div id="ets-chart"></div>
+      </div>
     </section>
 
   </div>
@@ -430,6 +434,7 @@ async function findRoutes() {
     if (data.routes.length > 0) {
       renderSatellitePanel(data.routes[0]);
       renderETSPanel(data.routes[0]);
+      renderETSChart(data.routes[0]);
     }
   } catch (err) {
     errorMsg.textContent = 'Request failed: ' + err.message;
@@ -552,6 +557,7 @@ function selectRoute(idx) {
   if (currentRoutes && currentRoutes[idx]) {
     renderSatellitePanel(currentRoutes[idx]);
     renderETSPanel(currentRoutes[idx]);
+    renderETSChart(currentRoutes[idx]);
     highlightRoute(idx);
   }
 }
@@ -657,10 +663,36 @@ function renderMap(routes) {
     const opacity = ri === 0 ? 1.0 : 0.3;
 
     route.edges.forEach(edge => {
+      /* Use pre-computed waypoints for ocean edges that cross land,
+         otherwise fall back to simple start/end pair */
+      let lats = (edge.waypoints && edge.waypoints.length)
+        ? edge.waypoints.map(w => w[0])
+        : [edge.from_lat, edge.to_lat];
+      let lons = (edge.waypoints && edge.waypoints.length)
+        ? edge.waypoints.map(w => w[1])
+        : [edge.from_lon, edge.to_lon];
+
+      /* Insert null breaks at dateline crossings so Plotly doesn't
+         draw a line across the entire map */
+      if (lons.length > 1) {
+        const fixedLats = [lats[0]];
+        const fixedLons = [lons[0]];
+        for (let k = 1; k < lons.length; k++) {
+          if (Math.abs(lons[k] - lons[k - 1]) >= 180) {
+            fixedLats.push(null);
+            fixedLons.push(null);
+          }
+          fixedLats.push(lats[k]);
+          fixedLons.push(lons[k]);
+        }
+        lats = fixedLats;
+        lons = fixedLons;
+      }
+
       traces.push({
         type: 'scattergeo',
-        lat: [edge.from_lat, edge.to_lat],
-        lon: [edge.from_lon, edge.to_lon],
+        lat: lats,
+        lon: lons,
         mode: 'lines',
         line: {
           width: ri === 0 ? 3 : 1.5,
@@ -867,6 +899,127 @@ function renderSatellitePanel(route) {
       <div class="aq-narrative">${sat.air_quality.narrative}</div>
     </div>` : ''}
   `;
+}
+
+/* ── ETS Chart ── */
+function renderETSChart(route) {
+  const wrap = document.getElementById('ets-chart-wrap');
+  const chartDiv = document.getElementById('ets-chart');
+  const ets = route.ets;
+  const edges = route.edges;
+
+  if (!ets || !ets.legs || ets.legs.length === 0) {
+    wrap.classList.add('hidden');
+    return;
+  }
+  wrap.classList.remove('hidden');
+
+  // Build cumulative arrays
+  const labels = [edges[0].from];
+  const cumCO2 = [0];
+  const cumLiable = [0];
+  const cumETSCost = [0];
+  const cumOffset = [0];
+  const cumLogCost = [0];
+  const cumDist = [0];
+  const cumDays = [0];
+  const markerColors = ['#6b7280'];
+
+  let runCO2 = 0, runLiable = 0, runETSCost = 0, runOffset = 0;
+  let runLogCost = 0, runDist = 0, runDays = 0;
+  const modeColorMap = {ocean:'#2563eb', rail:'#16a34a', truck:'#ea580c', air:'#dc2626', last_mile:'#6b7280'};
+
+  for (let i = 0; i < edges.length; i++) {
+    const e = edges[i];
+    const leg = ets.legs[i] || {};
+    runCO2 += e.co2_kg || 0;
+    runLiable += leg.liable_co2_kg || 0;
+    runETSCost += leg.ets_cost_eur || 0;
+    runOffset += (e.co2_kg || 0) / 1000 * 25;
+    runLogCost += e.cost_usd || 0;
+    runDist += e.distance_km || 0;
+    runDays += e.transit_days || 0;
+    labels.push(e.to);
+    cumCO2.push(runCO2);
+    cumLiable.push(runLiable);
+    cumETSCost.push(runETSCost);
+    cumOffset.push(runOffset);
+    cumLogCost.push(runLogCost);
+    cumDist.push(runDist);
+    cumDays.push(runDays);
+    markerColors.push(modeColorMap[e.mode] || '#6b7280');
+  }
+
+  const hoverDays = cumDays.map((d, i) => labels[i] + '<br>Day ' + d.toFixed(1));
+
+  const traceCO2 = {
+    x: labels, y: cumCO2, name: 'Total CO\u2082',
+    type: 'scatter', mode: 'lines+markers',
+    line: {color: '#ea580c', width: 2.5},
+    marker: {color: markerColors, size: 7, line: {color: '#fff', width: 1}},
+    text: hoverDays, hovertemplate: '%{text}<br>%{y:,.0f} kg<extra>Total CO\u2082</extra>',
+    yaxis: 'y'
+  };
+
+  const traceLiable = {
+    x: labels, y: cumLiable, name: 'ETS Liable CO\u2082',
+    type: 'scatter', mode: 'lines+markers',
+    line: {color: '#dc2626', width: 2, dash: 'dot'},
+    marker: {color: '#dc2626', size: 5},
+    text: hoverDays, hovertemplate: '%{text}<br>%{y:,.0f} kg<extra>ETS Liable CO\u2082</extra>',
+    fill: 'tonexty', fillcolor: 'rgba(234,88,12,0.06)',
+    yaxis: 'y'
+  };
+
+  const traceDist = {
+    x: labels, y: cumDist, name: 'Distance (km)',
+    type: 'scatter', mode: 'lines+markers',
+    line: {color: '#9333ea', width: 1.5, dash: 'dashdot'},
+    marker: {color: '#9333ea', size: 4},
+    text: hoverDays, hovertemplate: '%{text}<br>%{y:,.0f} km<extra>Distance</extra>',
+    yaxis: 'y',
+    visible: 'legendonly'
+  };
+
+  const traceETSCost = {
+    x: labels, y: cumETSCost, name: 'ETS Cost (\u20ac)',
+    type: 'scatter', mode: 'lines+markers',
+    line: {color: '#2563eb', width: 2, dash: 'dash'},
+    marker: {color: '#2563eb', size: 5},
+    text: hoverDays, hovertemplate: '%{text}<br>\u20ac%{y:,.0f}<extra>ETS Cost</extra>',
+    yaxis: 'y2'
+  };
+
+  const traceOffset = {
+    x: labels, y: cumOffset, name: 'Carbon Offset ($25/t)',
+    type: 'scatter', mode: 'lines+markers',
+    line: {color: '#0d9488', width: 1.5, dash: 'dash'},
+    marker: {color: '#0d9488', size: 4},
+    text: hoverDays, hovertemplate: '%{text}<br>$%{y:,.0f}<extra>Carbon Offset</extra>',
+    yaxis: 'y2'
+  };
+
+  const traceLogCost = {
+    x: labels, y: cumLogCost, name: 'Logistics Cost ($)',
+    type: 'scatter', mode: 'lines+markers',
+    line: {color: '#16a34a', width: 1.5},
+    marker: {color: '#16a34a', size: 4},
+    text: hoverDays, hovertemplate: '%{text}<br>$%{y:,.0f}<extra>Logistics Cost</extra>',
+    yaxis: 'y2'
+  };
+
+  const layout = {
+    height: 320, margin: {l: 55, r: 60, t: 10, b: 100},
+    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+    font: {family: 'Inter, sans-serif', size: 11, color: '#555'},
+    legend: {orientation: 'h', y: -0.52, x: 0.5, xanchor: 'center', font: {size: 9.5}, tracegroupgap: 4},
+    xaxis: {tickangle: -30, tickfont: {size: 10}, gridcolor: '#e0e3e8'},
+    yaxis: {title: 'CO\u2082 (kg) / Distance (km)', titlefont: {size: 10}, tickfont: {size: 10}, gridcolor: '#e0e3e8', zeroline: false},
+    yaxis2: {title: 'Cost (\u20ac / $)', titlefont: {size: 10, color: '#2563eb'}, tickfont: {size: 10, color: '#2563eb'}, overlaying: 'y', side: 'right', gridcolor: 'transparent', zeroline: false},
+    hovermode: 'x unified'
+  };
+
+  Plotly.newPlot(chartDiv, [traceCO2, traceLiable, traceDist, traceETSCost, traceOffset, traceLogCost], layout, {displayModeBar: false, responsive: true});
 }
 
 /* ── ETS Panel ── */
