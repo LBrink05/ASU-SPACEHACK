@@ -38,5 +38,6 @@
 ```bash
 source env/bin/activate
 pip install -r requirements
+cd application
 python app.py
 ```
