@@ -95,23 +95,35 @@
       <span>Querying satellite data&hellip;</span>
     </div>
     <div id="error-msg" class="error-msg hidden"></div>
-
-    <div class="Emission-graph">
-      <div id="emissions-chart" style="width:100%; height:300px;"></div>
-    </div>
   </section>
 
   <!-- RIGHT AREA: Results -->
   <div class="results-area">
-    <div class="right-panel">
-      <!-- Route Map -->
+
+    <!-- Route Map -->
     <section class="panel map-panel">
       <h2 class="panel-title">Route Map</h2>
+      <div class="map-toolbar">
+        <label class="overlay-toggle"><input type="checkbox" id="chk-corridors" checked onchange="redrawMap()"> Green Corridors</label>
+        <label class="overlay-toggle"><input type="checkbox" id="chk-ports-geo" checked onchange="redrawMap()"> Major Ports</label>
+        <div class="click-mode-group">
+          <span class="click-label">Click map:</span>
+          <button id="btn-click-origin" class="click-btn active" onclick="setClickMode('origin')">Set Origin</button>
+          <button id="btn-click-dest" class="click-btn" onclick="setClickMode('destination')">Set Dest</button>
+        </div>
+      </div>
       <div id="route-map" class="map-container"></div>
+      <div id="anim-controls" class="anim-controls hidden">
+        <button id="btn-play" class="anim-btn" onclick="toggleAnimation()">&#9654; Play</button>
+        <div class="anim-progress-wrap">
+          <div class="anim-progress-bar" id="anim-bar"></div>
+        </div>
+        <span id="anim-day" class="anim-day">Day 0</span>
+      </div>
     </section>
-    </div>
-    <div class="left-panel"></div>
-    
+
+
+
     <!-- Route Options -->
     <section class="panel routes-panel" id="routes-panel">
       <h2 class="panel-title">Route Options</h2>
@@ -160,6 +172,15 @@ const MODE_LABELS = {
 
 let inputMode = 'dropdown';
 let currentRoutes = null;
+let selectedRouteIdx = 0;
+let clickMode = 'origin';
+let corridorsData = null;
+let portsGeoData = null;
+let animTimer = null;
+let animStep = 0;
+let animPath = [];
+let animTotalDays = 0;
+const ALL_NODES = {{ nodes | tojson }};
 
 /* ── Input mode toggle ── */
 function setInputMode(mode) {
@@ -274,6 +295,7 @@ function renderRouteCards(routes) {
           </div>
         </div>
         <div class="route-ets-cost">ETS Cost: ${etsCost}</div>
+        <div class="route-offset">Carbon Offset: $${formatNum(r.total_co2_kg / 1000 * 25)} <span class="offset-rate">@ $25/tonne</span></div>
         <table class="leg-table">
           <thead><tr><th>From</th><th>To</th><th>Mode</th><th>CO₂</th><th>Cost</th><th>Days</th></tr></thead>
           <tbody>
@@ -295,6 +317,8 @@ function renderRouteCards(routes) {
 }
 
 function selectRoute(idx) {
+  selectedRouteIdx = idx;
+  stopAnimation();
   document.querySelectorAll('.route-card').forEach((c, i) => {
     c.classList.toggle('selected', i === idx);
   });
@@ -305,14 +329,106 @@ function selectRoute(idx) {
   }
 }
 
+/* ── Map constants ── */
+const GEO_LAYOUT = {
+  projection: {type: 'natural earth', rotation: {lon: 20, lat: 0}},
+  bgcolor: '#ffffff',
+  landcolor: '#e8ebe4',
+  oceancolor: '#dce8f5',
+  lakecolor: '#dce8f5',
+  coastlinecolor: '#b0b8c0',
+  countrycolor: '#c8cdd4',
+  showframe: false,
+  showocean: true,
+  showland: true,
+  showlakes: true,
+};
+
+const TYPE_MARKER = {
+  port:      {color: '#2563eb', symbol: 'circle',       size: 10},
+  city:      {color: '#111111', symbol: 'circle',       size: 9},
+  airport:   {color: '#dc2626', symbol: 'triangle-up',  size: 10},
+  rail_hub:  {color: '#16a34a', symbol: 'diamond',      size: 10},
+  warehouse: {color: '#ea580c', symbol: 'square',       size: 9},
+};
+const defaultMarker = {color: '#6b7280', symbol: 'circle', size: 8};
+
+/* ── Overlay traces (corridors, ports, all nodes) ── */
+function buildOverlayTraces() {
+  const traces = [];
+
+  // Green corridors from GeoJSON
+  if (corridorsData && document.getElementById('chk-corridors').checked) {
+    corridorsData.features.forEach(ft => {
+      const coords = ft.geometry.coordinates;
+      const c = ft.properties.color;
+      traces.push({
+        type: 'scattergeo',
+        lat: coords.map(p => p[1]),
+        lon: coords.map(p => p[0]),
+        mode: 'lines',
+        line: {width: 2.5, color: `rgba(${c[0]},${c[1]},${c[2]},0.35)`, dash: 'dot'},
+        name: ft.properties.short,
+        showlegend: false,
+        hoverinfo: 'text',
+        text: `${ft.properties.name}<br>${ft.properties.target_fuel} (${ft.properties.target_year})<br>${ft.properties.declaration} Declaration`,
+        meta: {overlay: true},
+      });
+    });
+  }
+
+  // Major ports from GeoJSON
+  if (portsGeoData && document.getElementById('chk-ports-geo').checked) {
+    const pLats = [], pLons = [], pTexts = [], pSizes = [];
+    portsGeoData.features.forEach(ft => {
+      const c = ft.geometry.coordinates;
+      pLats.push(c[1]);
+      pLons.push(c[0]);
+      pTexts.push(`${ft.properties.name} (${ft.properties.country})<br>${ft.properties.teu_millions}M TEU<br>NO\u2082: ${ft.properties.no2_signature}`);
+      pSizes.push(Math.max(5, Math.min(13, ft.properties.teu_millions / 3.5)));
+    });
+    traces.push({
+      type: 'scattergeo',
+      lat: pLats, lon: pLons,
+      mode: 'markers',
+      marker: {size: pSizes, color: 'rgba(80,100,200,0.45)', symbol: 'circle', line: {width: 0.5, color: '#5064c8'}},
+      showlegend: false,
+      hoverinfo: 'text',
+      text: pTexts,
+      meta: {overlay: true},
+    });
+  }
+
+  // All network nodes (small, clickable)
+  const nLats = [], nLons = [], nTexts = [], nIds = [];
+  ALL_NODES.forEach(n => {
+    nLats.push(n.lat);
+    nLons.push(n.lon);
+    nTexts.push(n.label);
+    nIds.push(n.id);
+  });
+  traces.push({
+    type: 'scattergeo',
+    lat: nLats, lon: nLons,
+    mode: 'markers',
+    marker: {size: 5, color: 'rgba(0,0,0,0.12)', symbol: 'circle'},
+    showlegend: false,
+    hoverinfo: 'text',
+    text: nTexts,
+    customdata: nIds,
+    meta: {nodeLayer: true},
+  });
+
+  return traces;
+}
+
 /* ── Map ── */
 function renderMap(routes) {
-  const traces = [];
+  const traces = buildOverlayTraces();
 
   routes.forEach((route, ri) => {
     const opacity = ri === 0 ? 1.0 : 0.3;
 
-    // Group edges by mode for coloring
     route.edges.forEach(edge => {
       traces.push({
         type: 'scattergeo',
@@ -327,12 +443,11 @@ function renderMap(routes) {
         name: ri === 0 ? `R${route.rank}: ${MODE_LABELS[edge.mode]}` : '',
         showlegend: ri === 0,
         hoverinfo: 'text',
-        text: `${edge.from} → ${edge.to}<br>${MODE_LABELS[edge.mode]}<br>${formatNum(edge.co2_kg)} kg CO₂`,
+        text: `${edge.from} \u2192 ${edge.to}<br>${MODE_LABELS[edge.mode]}<br>${formatNum(edge.co2_kg)} kg CO\u2082`,
         meta: {routeIdx: ri},
       });
     });
 
-    // Node markers for primary route — per-type colors
     if (ri === 0) {
       const labels = route.node_labels;
       const nodeTypes = route.node_types || [];
@@ -341,23 +456,13 @@ function renderMap(routes) {
       const lons = route.edges.map(e => e.from_lon);
       lons.push(route.edges[route.edges.length - 1].to_lon);
 
-      const TYPE_MARKER = {
-        port:      {color: '#2563eb', symbol: 'circle',       size: 10},
-        city:      {color: '#111111', symbol: 'circle',       size: 9},
-        airport:   {color: '#dc2626', symbol: 'triangle-up',  size: 10},
-        rail_hub:  {color: '#16a34a', symbol: 'diamond',      size: 10},
-        warehouse: {color: '#ea580c', symbol: 'square',       size: 9},
-      };
-      const defaultMarker = {color: '#6b7280', symbol: 'circle', size: 8};
-
       const colors = nodeTypes.map(t => (TYPE_MARKER[t] || defaultMarker).color);
       const symbols = nodeTypes.map(t => (TYPE_MARKER[t] || defaultMarker).symbol);
       const sizes = nodeTypes.map(t => (TYPE_MARKER[t] || defaultMarker).size);
 
       traces.push({
         type: 'scattergeo',
-        lat: lats,
-        lon: lons,
+        lat: lats, lon: lons,
         mode: 'markers+text',
         marker: {size: sizes, color: colors, symbol: symbols, line: {width: 1.5, color: '#ffffff'}},
         text: labels,
@@ -370,19 +475,7 @@ function renderMap(routes) {
   });
 
   const layout = {
-    geo: {
-      projection: {type: 'orthographic', rotation: {lon: 60, lat: 20}},
-      bgcolor: '#ffffff',
-      landcolor: '#e8ebe4',
-      oceancolor: '#dce8f5',
-      lakecolor: '#dce8f5',
-      coastlinecolor: '#b0b8c0',
-      countrycolor: '#c8cdd4',
-      showframe: false,
-      showocean: true,
-      showland: true,
-      showlakes: true,
-    },
+    geo: GEO_LAYOUT,
     paper_bgcolor: '#ffffff',
     plot_bgcolor: '#ffffff',
     margin: {l: 0, r: 0, t: 0, b: 0},
@@ -394,13 +487,19 @@ function renderMap(routes) {
   };
 
   Plotly.newPlot('route-map', traces, layout, {responsive: true, displayModeBar: false});
+  setupMapClickHandler();
+
+  // Show animation controls
+  stopAnimation();
+  document.getElementById('anim-controls').classList.remove('hidden');
+  document.getElementById('anim-bar').style.width = '0%';
+  document.getElementById('anim-day').textContent = 'Day 0';
 }
 
 function highlightRoute(idx) {
   const mapDiv = document.getElementById('route-map');
-  if (!mapDiv.data) return;
+  if (!mapDiv || !mapDiv.data) return;
 
-  const update = {};
   mapDiv.data.forEach((trace, i) => {
     const isTarget = trace.meta && trace.meta.routeIdx === idx;
     const isPrimary = trace.meta && trace.meta.routeIdx !== undefined;
@@ -502,33 +601,174 @@ function renderETSPanel(route) {
   `;
 }
 
+
 /* ── Utility ── */
 function formatNum(n) {
   if (n === null || n === undefined) return '—';
   return Number(n).toLocaleString(undefined, {maximumFractionDigits: 1});
 }
 
-/* ── Initialize map on load ── */
-window.addEventListener('DOMContentLoaded', () => {
-  // Show empty world map
-  Plotly.newPlot('route-map', [], {
-    geo: {
-      projection: {type: 'orthographic', rotation: {lon: 60, lat: 20}},
-      bgcolor: '#ffffff',
-      landcolor: '#e8ebe4',
-      oceancolor: '#dce8f5',
-      lakecolor: '#dce8f5',
-      coastlinecolor: '#b0b8c0',
-      countrycolor: '#c8cdd4',
-      showframe: false,
-      showocean: true,
-      showland: true,
-      showlakes: true,
-    },
+/* ── Overlay loading ── */
+async function loadOverlays() {
+  try {
+    const [cResp, pResp] = await Promise.all([
+      fetch('/api/corridors'),
+      fetch('/api/geojson-ports'),
+    ]);
+    corridorsData = await cResp.json();
+    portsGeoData = await pResp.json();
+  } catch (e) {
+    console.warn('Could not load overlays:', e);
+  }
+}
+
+function renderEmptyMap() {
+  const traces = buildOverlayTraces();
+  Plotly.newPlot('route-map', traces, {
+    geo: GEO_LAYOUT,
     paper_bgcolor: '#ffffff',
     plot_bgcolor: '#ffffff',
     margin: {l: 0, r: 0, t: 0, b: 0},
   }, {responsive: true, displayModeBar: false});
+  setupMapClickHandler();
+}
+
+function redrawMap() {
+  if (currentRoutes) {
+    renderMap(currentRoutes);
+  } else {
+    renderEmptyMap();
+  }
+}
+
+/* ── Click-to-select ── */
+function setClickMode(mode) {
+  clickMode = mode;
+  document.getElementById('btn-click-origin').classList.toggle('active', mode === 'origin');
+  document.getElementById('btn-click-dest').classList.toggle('active', mode === 'destination');
+}
+
+function setupMapClickHandler() {
+  const mapDiv = document.getElementById('route-map');
+  mapDiv.removeAllListeners('plotly_click');
+  mapDiv.on('plotly_click', function(data) {
+    if (!data.points || !data.points.length) return;
+    const pt = data.points[0];
+
+    // If clicked point has customdata (a node ID), use directly
+    let nodeId = null;
+    if (pt.customdata) {
+      nodeId = pt.customdata;
+    } else {
+      // Find nearest node by lat/lon
+      let minDist = Infinity;
+      ALL_NODES.forEach(node => {
+        const d = Math.pow(node.lat - pt.lat, 2) + Math.pow(node.lon - pt.lon, 2);
+        if (d < minDist) { minDist = d; nodeId = node.id; }
+      });
+      if (minDist > 200) return;
+    }
+    if (!nodeId) return;
+
+    // Set in dropdown mode
+    setInputMode('dropdown');
+    if (clickMode === 'origin') {
+      document.getElementById('sel-origin').value = nodeId;
+      setClickMode('destination');
+    } else {
+      document.getElementById('sel-dest').value = nodeId;
+      setClickMode('origin');
+    }
+  });
+}
+
+/* ── Route Animation ── */
+function buildAnimPath(route) {
+  const path = [];
+  let daysSoFar = 0;
+  route.edges.forEach(edge => {
+    const nSteps = Math.max(Math.ceil(edge.transit_days * 8), 4);
+    for (let i = 0; i <= nSteps; i++) {
+      const t = i / nSteps;
+      path.push({
+        lat: edge.from_lat + t * (edge.to_lat - edge.from_lat),
+        lon: edge.from_lon + t * (edge.to_lon - edge.from_lon),
+        day: daysSoFar + t * edge.transit_days,
+        mode: edge.mode,
+      });
+    }
+    daysSoFar += edge.transit_days;
+  });
+  return {path, totalDays: daysSoFar};
+}
+
+function toggleAnimation() {
+  if (animTimer) { stopAnimation(); return; }
+  if (!currentRoutes || !currentRoutes[selectedRouteIdx]) return;
+
+  const route = currentRoutes[selectedRouteIdx];
+  const result = buildAnimPath(route);
+  animPath = result.path;
+  animTotalDays = result.totalDays;
+  animStep = 0;
+
+  document.getElementById('btn-play').innerHTML = '&#9646;&#9646; Pause';
+
+  Plotly.addTraces('route-map', {
+    type: 'scattergeo',
+    lat: [animPath[0].lat],
+    lon: [animPath[0].lon],
+    mode: 'markers',
+    marker: {
+      size: 14,
+      color: MODE_COLORS[animPath[0].mode],
+      symbol: 'circle',
+      line: {width: 2.5, color: '#ffffff'},
+    },
+    showlegend: false,
+    hoverinfo: 'none',
+    meta: {animMarker: true},
+  });
+
+  animTimer = setInterval(stepAnimation, 70);
+}
+
+function stepAnimation() {
+  if (animStep >= animPath.length - 1) {
+    stopAnimation();
+    document.getElementById('btn-play').innerHTML = '&#8635; Replay';
+    return;
+  }
+  animStep++;
+  const pt = animPath[animStep];
+  const mapDiv = document.getElementById('route-map');
+  const idx = mapDiv.data.length - 1;
+
+  Plotly.restyle('route-map', {
+    lat: [[pt.lat]],
+    lon: [[pt.lon]],
+    'marker.color': [MODE_COLORS[pt.mode]],
+  }, [idx]);
+
+  const pct = (animStep / (animPath.length - 1)) * 100;
+  document.getElementById('anim-bar').style.width = pct + '%';
+  document.getElementById('anim-day').textContent = 'Day ' + pt.day.toFixed(1);
+}
+
+function stopAnimation() {
+  if (animTimer) { clearInterval(animTimer); animTimer = null; }
+  document.getElementById('btn-play').innerHTML = '&#9654; Play';
+  const mapDiv = document.getElementById('route-map');
+  if (mapDiv.data) {
+    const animIdx = mapDiv.data.findIndex(t => t.meta && t.meta.animMarker);
+    if (animIdx >= 0) Plotly.deleteTraces('route-map', animIdx);
+  }
+}
+
+/* ── Initialize map on load ── */
+window.addEventListener('DOMContentLoaded', async () => {
+  await loadOverlays();
+  renderEmptyMap();
 });
 </script>
 {% endblock %}

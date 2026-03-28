@@ -32,13 +32,26 @@ def _graph_nodes_dict():
 def index():
     nodes = routing.node_options()
     gee_ok = gee_fetchers.init_gee()
-    print(f"GEE initialized: {gee_ok}", flush=True)
     return render_template("index.html", nodes=nodes, gee_available=gee_ok)
 
 
 @app.route("/api/nodes")
 def api_nodes():
     return jsonify(routing.node_options())
+
+
+@app.route("/api/corridors")
+def api_corridors():
+    path = os.path.join(os.path.dirname(__file__), "data", "corridors.geojson")
+    with open(path) as f:
+        return jsonify(json.load(f))
+
+
+@app.route("/api/geojson-ports")
+def api_geojson_ports():
+    path = os.path.join(os.path.dirname(__file__), "data", "ports.geojson")
+    with open(path) as f:
+        return jsonify(json.load(f))
 
 
 @app.route("/api/routes", methods=["POST"])
@@ -78,8 +91,6 @@ def api_routes():
     w_time = float(data.get("w_time", 0.15))
     fetch_satellite = data.get("fetch_satellite", True)
 
-    app.logger.info(f"Finding routes: origin={origin}, dest={destination}, cargo_t={cargo_t}, fetch_satellite={fetch_satellite}")
-
     routes = routing.find_routes(
         origin, destination, cargo_t,
         w_emissions, w_cost, w_compliance, w_time,
@@ -106,16 +117,11 @@ def api_routes():
                 "waypoint_count": len(leg["waypoints"]),
             })
 
-        print(f"Route has {len(all_waypoints)} total waypoints", flush=True)
-
         # Satellite data enrichment (if enabled)
         if fetch_satellite and gee_fetchers.is_available():
-            print(f"Fetching satellite data for {len(all_waypoints)} waypoints...", flush=True)
             enriched = gee_fetchers.enrich_waypoints(all_waypoints, sample_every=4)
             route["satellite"] = gee_fetchers.satellite_summary(enriched)
-            print(f"Satellite summary: {route['satellite']}", flush=True)
         else:
-            print(f"Skipping satellite fetch (fetch_satellite={fetch_satellite}, gee_available={gee_fetchers.is_available()})", flush=True)
             route["satellite"] = {
                 "gee_available": False,
                 "waypoints_sampled": 0,
@@ -141,5 +147,5 @@ def api_routes():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5052))
-    print(f"\n  NeoNomad starting on http://127.0.0.1:{port}\n", flush=True)
+    print(f"\n  NeoNomad starting on http://127.0.0.1:{port}\n")
     app.run(debug=True, port=port)

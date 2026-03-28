@@ -76,7 +76,7 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "colomobo", "name": "Colombo", "country": "Sri Lanka",
+        "id": "colombo", "name": "Colombo", "country": "Sri Lanka",
         "teu_millions": 7.2, "corridors": ["sgp_rtm"],
         "no2_signature": "medium", "notes": "Indian Ocean transshipment hub"
       },

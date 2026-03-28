@@ -1,255 +1,2031 @@
 {
   "meta": {
     "version": "2.0",
-    "node_types": ["city", "port", "airport", "rail_hub", "warehouse"],
-    "regions": ["north_america", "europe", "asia", "middle_east", "africa", "south_america", "oceania"]
+    "node_types": [
+      "city",
+      "port",
+      "airport",
+      "rail_hub",
+      "warehouse"
+    ],
+    "regions": [
+      "north_america",
+      "europe",
+      "asia",
+      "middle_east",
+      "africa",
+      "south_america",
+      "oceania"
+    ]
   },
   "nodes": [
     {
-      "id": "chicago",      "label": "Chicago",           "type": "city",
-      "lat": 41.88, "lon": -87.63,  "region": "north_america",
+      "id": "chicago",
+      "label": "Chicago",
+      "type": "city",
+      "lat": 41.88,
+      "lon": -87.63,
+      "region": "north_america",
       "ets_scope": false
     },
     {
-      "id": "dallas",       "label": "Dallas",            "type": "city",
-      "lat": 32.78, "lon": -96.80,  "region": "north_america",
+      "id": "dallas",
+      "label": "Dallas",
+      "type": "city",
+      "lat": 32.78,
+      "lon": -96.8,
+      "region": "north_america",
       "ets_scope": false
     },
     {
-      "id": "new_york",     "label": "New York",          "type": "city",
-      "lat": 40.71, "lon": -74.01,  "region": "north_america",
+      "id": "new_york",
+      "label": "New York",
+      "type": "city",
+      "lat": 40.71,
+      "lon": -74.01,
+      "region": "north_america",
       "ets_scope": false
     },
     {
-      "id": "los_angeles",  "label": "Los Angeles",       "type": "city",
-      "lat": 34.05, "lon": -118.24, "region": "north_america",
+      "id": "los_angeles",
+      "label": "Los Angeles",
+      "type": "city",
+      "lat": 34.05,
+      "lon": -118.24,
+      "region": "north_america",
       "ets_scope": false
     },
     {
-      "id": "miami",        "label": "Miami",             "type": "city",
-      "lat": 25.77, "lon": -80.19,  "region": "north_america",
+      "id": "miami",
+      "label": "Miami",
+      "type": "city",
+      "lat": 25.77,
+      "lon": -80.19,
+      "region": "north_america",
       "ets_scope": false
     },
     {
-      "id": "london",       "label": "London",            "type": "city",
-      "lat": 51.51, "lon": -0.13,   "region": "europe",
+      "id": "london",
+      "label": "London",
+      "type": "city",
+      "lat": 51.51,
+      "lon": -0.13,
+      "region": "europe",
       "ets_scope": true
     },
     {
-      "id": "frankfurt",    "label": "Frankfurt",         "type": "city",
-      "lat": 50.11, "lon": 8.68,    "region": "europe",
+      "id": "frankfurt",
+      "label": "Frankfurt",
+      "type": "city",
+      "lat": 50.11,
+      "lon": 8.68,
+      "region": "europe",
       "ets_scope": true
     },
     {
-      "id": "paris",        "label": "Paris",             "type": "city",
-      "lat": 48.85, "lon": 2.35,    "region": "europe",
+      "id": "paris",
+      "label": "Paris",
+      "type": "city",
+      "lat": 48.85,
+      "lon": 2.35,
+      "region": "europe",
       "ets_scope": true
     },
     {
-      "id": "milan",        "label": "Milan",             "type": "city",
-      "lat": 45.46, "lon": 9.19,    "region": "europe",
+      "id": "milan",
+      "label": "Milan",
+      "type": "city",
+      "lat": 45.46,
+      "lon": 9.19,
+      "region": "europe",
       "ets_scope": true
     },
     {
-      "id": "dubai_city",   "label": "Dubai",             "type": "city",
-      "lat": 25.20, "lon": 55.27,   "region": "middle_east",
+      "id": "dubai_city",
+      "label": "Dubai",
+      "type": "city",
+      "lat": 25.2,
+      "lon": 55.27,
+      "region": "middle_east",
       "ets_scope": false
     },
     {
-      "id": "beijing",      "label": "Beijing",           "type": "city",
-      "lat": 39.91, "lon": 116.39,  "region": "asia",
+      "id": "beijing",
+      "label": "Beijing",
+      "type": "city",
+      "lat": 39.91,
+      "lon": 116.39,
+      "region": "asia",
       "ets_scope": false
     },
     {
-      "id": "tokyo",        "label": "Tokyo",             "type": "city",
-      "lat": 35.68, "lon": 139.69,  "region": "asia",
+      "id": "tokyo",
+      "label": "Tokyo",
+      "type": "city",
+      "lat": 35.68,
+      "lon": 139.69,
+      "region": "asia",
       "ets_scope": false
     },
     {
-      "id": "singapore_city","label": "Singapore",        "type": "city",
-      "lat": 1.35,  "lon": 103.82,  "region": "asia",
+      "id": "singapore_city",
+      "label": "Singapore",
+      "type": "city",
+      "lat": 1.35,
+      "lon": 103.82,
+      "region": "asia",
       "ets_scope": false
     },
     {
-      "id": "sydney",       "label": "Sydney",            "type": "city",
-      "lat": -33.87,"lon": 151.21,  "region": "oceania",
+      "id": "sydney",
+      "label": "Sydney",
+      "type": "city",
+      "lat": -33.87,
+      "lon": 151.21,
+      "region": "oceania",
       "ets_scope": false
     },
     {
-      "id": "sao_paulo",    "label": "Sao Paulo",         "type": "city",
-      "lat": -23.55,"lon": -46.63,  "region": "south_america",
+      "id": "sao_paulo",
+      "label": "Sao Paulo",
+      "type": "city",
+      "lat": -23.55,
+      "lon": -46.63,
+      "region": "south_america",
       "ets_scope": false
     },
     {
-      "id": "port_lax",     "label": "Port of LA/Long Beach","type": "port",
-      "lat": 33.75, "lon": -118.22, "region": "north_america",
-      "ets_scope": false,  "teu_millions": 18.0
+      "id": "port_lax",
+      "label": "Port of LA/Long Beach",
+      "type": "port",
+      "lat": 33.75,
+      "lon": -118.22,
+      "region": "north_america",
+      "ets_scope": false,
+      "teu_millions": 18.0
     },
     {
-      "id": "port_nyc",     "label": "Port of New York/NJ","type": "port",
-      "lat": 40.65, "lon": -74.15,  "region": "north_america",
-      "ets_scope": false,  "teu_millions": 9.5
+      "id": "port_nyc",
+      "label": "Port of New York/NJ",
+      "type": "port",
+      "lat": 40.65,
+      "lon": -74.15,
+      "region": "north_america",
+      "ets_scope": false,
+      "teu_millions": 9.5
     },
     {
-      "id": "port_miami",   "label": "Port of Miami",     "type": "port",
-      "lat": 25.77, "lon": -80.17,  "region": "north_america",
-      "ets_scope": false,  "teu_millions": 1.0
+      "id": "port_miami",
+      "label": "Port of Miami",
+      "type": "port",
+      "lat": 25.77,
+      "lon": -80.17,
+      "region": "north_america",
+      "ets_scope": false,
+      "teu_millions": 1.0
     },
     {
-      "id": "port_houston", "label": "Port of Houston",   "type": "port",
-      "lat": 29.75, "lon": -95.02,  "region": "north_america",
-      "ets_scope": false,  "teu_millions": 3.5
+      "id": "port_houston",
+      "label": "Port of Houston",
+      "type": "port",
+      "lat": 29.75,
+      "lon": -95.02,
+      "region": "north_america",
+      "ets_scope": false,
+      "teu_millions": 3.5
     },
     {
-      "id": "port_rotterdam","label": "Port of Rotterdam","type": "port",
-      "lat": 51.95, "lon": 4.10,    "region": "europe",
-      "ets_scope": true,   "teu_millions": 14.0
+      "id": "port_rotterdam",
+      "label": "Port of Rotterdam",
+      "type": "port",
+      "lat": 51.95,
+      "lon": 4.1,
+      "region": "europe",
+      "ets_scope": true,
+      "teu_millions": 14.0
     },
     {
-      "id": "port_hamburg", "label": "Port of Hamburg",   "type": "port",
-      "lat": 53.55, "lon": 9.90,    "region": "europe",
-      "ets_scope": true,   "teu_millions": 8.3
+      "id": "port_hamburg",
+      "label": "Port of Hamburg",
+      "type": "port",
+      "lat": 53.55,
+      "lon": 9.9,
+      "region": "europe",
+      "ets_scope": true,
+      "teu_millions": 8.3
     },
     {
-      "id": "port_antwerp", "label": "Port of Antwerp",   "type": "port",
-      "lat": 51.25, "lon": 4.40,    "region": "europe",
-      "ets_scope": true,   "teu_millions": 12.0
+      "id": "port_antwerp",
+      "label": "Port of Antwerp",
+      "type": "port",
+      "lat": 51.25,
+      "lon": 4.4,
+      "region": "europe",
+      "ets_scope": true,
+      "teu_millions": 12.0
     },
     {
-      "id": "port_felixstowe","label": "Felixstowe",      "type": "port",
-      "lat": 51.96, "lon": 1.35,    "region": "europe",
-      "ets_scope": false,  "teu_millions": 4.0
+      "id": "port_felixstowe",
+      "label": "Felixstowe",
+      "type": "port",
+      "lat": 51.96,
+      "lon": 1.35,
+      "region": "europe",
+      "ets_scope": false,
+      "teu_millions": 4.0
     },
     {
-      "id": "port_barcelona","label": "Port of Barcelona","type": "port",
-      "lat": 41.35, "lon": 2.17,    "region": "europe",
-      "ets_scope": true,   "teu_millions": 3.5
+      "id": "port_barcelona",
+      "label": "Port of Barcelona",
+      "type": "port",
+      "lat": 41.35,
+      "lon": 2.17,
+      "region": "europe",
+      "ets_scope": true,
+      "teu_millions": 3.5
     },
     {
-      "id": "port_singapore","label": "Port of Singapore","type": "port",
-      "lat": 1.26,  "lon": 103.82,  "region": "asia",
-      "ets_scope": false,  "teu_millions": 39.0
+      "id": "port_singapore",
+      "label": "Port of Singapore",
+      "type": "port",
+      "lat": 1.26,
+      "lon": 103.82,
+      "region": "asia",
+      "ets_scope": false,
+      "teu_millions": 39.0
     },
     {
-      "id": "port_shanghai","label": "Port of Shanghai",  "type": "port",
-      "lat": 31.20, "lon": 121.54,  "region": "asia",
-      "ets_scope": false,  "teu_millions": 47.3
+      "id": "port_shanghai",
+      "label": "Port of Shanghai",
+      "type": "port",
+      "lat": 31.2,
+      "lon": 121.54,
+      "region": "asia",
+      "ets_scope": false,
+      "teu_millions": 47.3
     },
     {
-      "id": "port_shenzhen","label": "Port of Shenzhen",  "type": "port",
-      "lat": 22.54, "lon": 114.06,  "region": "asia",
-      "ets_scope": false,  "teu_millions": 29.9
+      "id": "port_shenzhen",
+      "label": "Port of Shenzhen",
+      "type": "port",
+      "lat": 22.54,
+      "lon": 114.06,
+      "region": "asia",
+      "ets_scope": false,
+      "teu_millions": 29.9
     },
     {
-      "id": "port_busan",   "label": "Port of Busan",     "type": "port",
-      "lat": 35.10, "lon": 129.07,  "region": "asia",
-      "ets_scope": false,  "teu_millions": 22.8
+      "id": "port_busan",
+      "label": "Port of Busan",
+      "type": "port",
+      "lat": 35.1,
+      "lon": 129.07,
+      "region": "asia",
+      "ets_scope": false,
+      "teu_millions": 22.8
     },
     {
-      "id": "port_dubai",   "label": "Jebel Ali (Dubai)", "type": "port",
-      "lat": 25.00, "lon": 55.07,   "region": "middle_east",
-      "ets_scope": false,  "teu_millions": 14.3
+      "id": "port_dubai",
+      "label": "Jebel Ali (Dubai)",
+      "type": "port",
+      "lat": 25.0,
+      "lon": 55.07,
+      "region": "middle_east",
+      "ets_scope": false,
+      "teu_millions": 14.3
     },
     {
-      "id": "port_sydney",  "label": "Port Botany (Sydney)","type": "port",
-      "lat": -34.00,"lon": 151.23,  "region": "oceania",
-      "ets_scope": false,  "teu_millions": 2.8
+      "id": "port_sydney",
+      "label": "Port Botany (Sydney)",
+      "type": "port",
+      "lat": -34.0,
+      "lon": 151.23,
+      "region": "oceania",
+      "ets_scope": false,
+      "teu_millions": 2.8
     },
     {
-      "id": "port_santos",  "label": "Port of Santos",    "type": "port",
-      "lat": -23.97,"lon": -46.33,  "region": "south_america",
-      "ets_scope": false,  "teu_millions": 4.3
+      "id": "port_santos",
+      "label": "Port of Santos",
+      "type": "port",
+      "lat": -23.97,
+      "lon": -46.33,
+      "region": "south_america",
+      "ets_scope": false,
+      "teu_millions": 4.3
     },
-
-    {"id": "vancouver",       "label": "Vancouver",              "type": "city",
-     "lat": 49.28, "lon": -123.12, "region": "north_america", "ets_scope": false},
-    {"id": "port_vancouver",  "label": "Port of Vancouver",      "type": "port",
-     "lat": 49.29, "lon": -123.11, "region": "north_america", "ets_scope": false, "teu_millions": 3.6},
-    {"id": "atlanta",         "label": "Atlanta",                 "type": "city",
-     "lat": 33.75, "lon": -84.39,  "region": "north_america", "ets_scope": false},
-    {"id": "port_savannah",   "label": "Port of Savannah",       "type": "port",
-     "lat": 32.08, "lon": -81.09,  "region": "north_america", "ets_scope": false, "teu_millions": 5.8},
-    {"id": "memphis_airport", "label": "Memphis Airport (MEM)",   "type": "airport",
-     "lat": 35.04, "lon": -89.98,  "region": "north_america", "ets_scope": false},
-    {"id": "chicago_hub",     "label": "Chicago Intermodal",      "type": "rail_hub",
-     "lat": 41.80, "lon": -87.75,  "region": "north_america", "ets_scope": false},
-    {"id": "dallas_warehouse","label": "Dallas Distribution Center","type": "warehouse",
-     "lat": 32.90, "lon": -96.95,  "region": "north_america", "ets_scope": false},
-
-    {"id": "madrid",          "label": "Madrid",                  "type": "city",
-     "lat": 40.42, "lon": -3.70,   "region": "europe", "ets_scope": true},
-    {"id": "istanbul",        "label": "Istanbul",                "type": "city",
-     "lat": 41.01, "lon": 28.98,   "region": "europe", "ets_scope": false},
-    {"id": "port_istanbul",   "label": "Ambarli Port (Istanbul)", "type": "port",
-     "lat": 41.00, "lon": 28.68,   "region": "europe", "ets_scope": false, "teu_millions": 3.1},
-    {"id": "port_piraeus",    "label": "Port of Piraeus",         "type": "port",
-     "lat": 37.94, "lon": 23.63,   "region": "europe", "ets_scope": true, "teu_millions": 5.3},
-    {"id": "port_genoa",      "label": "Port of Genoa",           "type": "port",
-     "lat": 44.41, "lon": 8.93,    "region": "europe", "ets_scope": true, "teu_millions": 2.7},
-    {"id": "duisburg_hub",    "label": "Duisburg Intermodal",     "type": "rail_hub",
-     "lat": 51.43, "lon": 6.76,    "region": "europe", "ets_scope": true},
-    {"id": "frankfurt_airport","label": "Frankfurt Airport (FRA)", "type": "airport",
-     "lat": 50.04, "lon": 8.57,    "region": "europe", "ets_scope": true},
-    {"id": "amsterdam_airport","label": "Schiphol Airport (AMS)", "type": "airport",
-     "lat": 52.31, "lon": 4.76,    "region": "europe", "ets_scope": true},
-    {"id": "rotterdam_warehouse","label": "Rotterdam Distribution Center","type": "warehouse",
-     "lat": 51.92, "lon": 4.42,    "region": "europe", "ets_scope": true},
-
-    {"id": "mumbai",          "label": "Mumbai",                  "type": "city",
-     "lat": 19.08, "lon": 72.88,   "region": "asia", "ets_scope": false},
-    {"id": "port_nhava_sheva","label": "Nhava Sheva (JNPT)",      "type": "port",
-     "lat": 18.95, "lon": 72.95,   "region": "asia", "ets_scope": false, "teu_millions": 5.7},
-    {"id": "bangkok",         "label": "Bangkok",                 "type": "city",
-     "lat": 13.76, "lon": 100.50,  "region": "asia", "ets_scope": false},
-    {"id": "port_laem_chabang","label": "Laem Chabang Port",      "type": "port",
-     "lat": 13.08, "lon": 100.88,  "region": "asia", "ets_scope": false, "teu_millions": 8.1},
-    {"id": "ho_chi_minh",     "label": "Ho Chi Minh City",        "type": "city",
-     "lat": 10.82, "lon": 106.63,  "region": "asia", "ets_scope": false},
-    {"id": "port_cat_lai",    "label": "Cat Lai Port",            "type": "port",
-     "lat": 10.76, "lon": 106.76,  "region": "asia", "ets_scope": false, "teu_millions": 5.4},
-    {"id": "hong_kong",       "label": "Hong Kong",               "type": "city",
-     "lat": 22.32, "lon": 114.17,  "region": "asia", "ets_scope": false},
-    {"id": "port_hong_kong",  "label": "Hong Kong Port (Kwai Tsing)","type": "port",
-     "lat": 22.33, "lon": 114.12,  "region": "asia", "ets_scope": false, "teu_millions": 14.8},
-    {"id": "osaka",           "label": "Osaka",                   "type": "city",
-     "lat": 34.69, "lon": 135.50,  "region": "asia", "ets_scope": false},
-    {"id": "xian_hub",        "label": "Xi'an Rail Hub",          "type": "rail_hub",
-     "lat": 34.26, "lon": 108.94,  "region": "asia", "ets_scope": false},
-    {"id": "shanghai_airport","label": "Shanghai Pudong (PVG)",    "type": "airport",
-     "lat": 31.14, "lon": 121.81,  "region": "asia", "ets_scope": false},
-    {"id": "singapore_airport","label": "Changi Airport (SIN)",   "type": "airport",
-     "lat": 1.36, "lon": 103.99,   "region": "asia", "ets_scope": false},
-
-    {"id": "riyadh",          "label": "Riyadh",                  "type": "city",
-     "lat": 24.71, "lon": 46.67,   "region": "middle_east", "ets_scope": false},
-    {"id": "port_jeddah",     "label": "King Abdullah Port (Jeddah)","type": "port",
-     "lat": 22.18, "lon": 39.10,   "region": "middle_east", "ets_scope": false, "teu_millions": 7.2},
-    {"id": "dubai_airport",   "label": "Dubai Airport (DXB)",     "type": "airport",
-     "lat": 25.25, "lon": 55.36,   "region": "middle_east", "ets_scope": false},
-
-    {"id": "johannesburg",    "label": "Johannesburg",            "type": "city",
-     "lat": -26.20, "lon": 28.04,  "region": "africa", "ets_scope": false},
-    {"id": "port_durban",     "label": "Port of Durban",          "type": "port",
-     "lat": -29.87, "lon": 31.05,  "region": "africa", "ets_scope": false, "teu_millions": 2.7},
-    {"id": "lagos",           "label": "Lagos",                   "type": "city",
-     "lat": 6.52, "lon": 3.38,     "region": "africa", "ets_scope": false},
-    {"id": "port_lagos",      "label": "Apapa Port (Lagos)",      "type": "port",
-     "lat": 6.44, "lon": 3.36,     "region": "africa", "ets_scope": false, "teu_millions": 1.2},
-    {"id": "port_tangier",    "label": "Tanger Med Port",         "type": "port",
-     "lat": 35.89, "lon": -5.50,   "region": "africa", "ets_scope": false, "teu_millions": 7.2},
-    {"id": "port_mombasa",    "label": "Port of Mombasa",         "type": "port",
-     "lat": -4.04, "lon": 39.67,   "region": "africa", "ets_scope": false, "teu_millions": 1.4},
-
-    {"id": "buenos_aires",    "label": "Buenos Aires",            "type": "city",
-     "lat": -34.60, "lon": -58.38, "region": "south_america", "ets_scope": false},
-    {"id": "port_buenos_aires","label": "Port of Buenos Aires",   "type": "port",
-     "lat": -34.60, "lon": -58.37, "region": "south_america", "ets_scope": false, "teu_millions": 1.5},
-    {"id": "lima",            "label": "Lima",                     "type": "city",
-     "lat": -12.05, "lon": -77.04, "region": "south_america", "ets_scope": false},
-
-    {"id": "melbourne",       "label": "Melbourne",               "type": "city",
-     "lat": -37.81, "lon": 144.96, "region": "oceania", "ets_scope": false},
-    {"id": "port_melbourne",  "label": "Port of Melbourne",       "type": "port",
-     "lat": -37.82, "lon": 144.91, "region": "oceania", "ets_scope": false, "teu_millions": 3.1}
+    {
+      "id": "vancouver",
+      "label": "Vancouver",
+      "type": "city",
+      "lat": 49.28,
+      "lon": -123.12,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_vancouver",
+      "label": "Port of Vancouver",
+      "type": "port",
+      "lat": 49.29,
+      "lon": -123.11,
+      "region": "north_america",
+      "ets_scope": false,
+      "teu_millions": 3.6
+    },
+    {
+      "id": "atlanta",
+      "label": "Atlanta",
+      "type": "city",
+      "lat": 33.75,
+      "lon": -84.39,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_savannah",
+      "label": "Port of Savannah",
+      "type": "port",
+      "lat": 32.08,
+      "lon": -81.09,
+      "region": "north_america",
+      "ets_scope": false,
+      "teu_millions": 5.8
+    },
+    {
+      "id": "memphis_airport",
+      "label": "Memphis Airport (MEM)",
+      "type": "airport",
+      "lat": 35.04,
+      "lon": -89.98,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "chicago_hub",
+      "label": "Chicago Intermodal",
+      "type": "rail_hub",
+      "lat": 41.8,
+      "lon": -87.75,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "dallas_warehouse",
+      "label": "Dallas Distribution Center",
+      "type": "warehouse",
+      "lat": 32.9,
+      "lon": -96.95,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "madrid",
+      "label": "Madrid",
+      "type": "city",
+      "lat": 40.42,
+      "lon": -3.7,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "istanbul",
+      "label": "Istanbul",
+      "type": "city",
+      "lat": 41.01,
+      "lon": 28.98,
+      "region": "europe",
+      "ets_scope": false
+    },
+    {
+      "id": "port_istanbul",
+      "label": "Ambarli Port (Istanbul)",
+      "type": "port",
+      "lat": 41.0,
+      "lon": 28.68,
+      "region": "europe",
+      "ets_scope": false,
+      "teu_millions": 3.1
+    },
+    {
+      "id": "port_piraeus",
+      "label": "Port of Piraeus",
+      "type": "port",
+      "lat": 37.94,
+      "lon": 23.63,
+      "region": "europe",
+      "ets_scope": true,
+      "teu_millions": 5.3
+    },
+    {
+      "id": "port_genoa",
+      "label": "Port of Genoa",
+      "type": "port",
+      "lat": 44.41,
+      "lon": 8.93,
+      "region": "europe",
+      "ets_scope": true,
+      "teu_millions": 2.7
+    },
+    {
+      "id": "duisburg_hub",
+      "label": "Duisburg Intermodal",
+      "type": "rail_hub",
+      "lat": 51.43,
+      "lon": 6.76,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "frankfurt_airport",
+      "label": "Frankfurt Airport (FRA)",
+      "type": "airport",
+      "lat": 50.04,
+      "lon": 8.57,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "amsterdam_airport",
+      "label": "Schiphol Airport (AMS)",
+      "type": "airport",
+      "lat": 52.31,
+      "lon": 4.76,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "rotterdam_warehouse",
+      "label": "Rotterdam Distribution Center",
+      "type": "warehouse",
+      "lat": 51.92,
+      "lon": 4.42,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "mumbai",
+      "label": "Mumbai",
+      "type": "city",
+      "lat": 19.08,
+      "lon": 72.88,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "port_nhava_sheva",
+      "label": "Nhava Sheva (JNPT)",
+      "type": "port",
+      "lat": 18.95,
+      "lon": 72.95,
+      "region": "asia",
+      "ets_scope": false,
+      "teu_millions": 5.7
+    },
+    {
+      "id": "bangkok",
+      "label": "Bangkok",
+      "type": "city",
+      "lat": 13.76,
+      "lon": 100.5,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "port_laem_chabang",
+      "label": "Laem Chabang Port",
+      "type": "port",
+      "lat": 13.08,
+      "lon": 100.88,
+      "region": "asia",
+      "ets_scope": false,
+      "teu_millions": 8.1
+    },
+    {
+      "id": "ho_chi_minh",
+      "label": "Ho Chi Minh City",
+      "type": "city",
+      "lat": 10.82,
+      "lon": 106.63,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "port_cat_lai",
+      "label": "Cat Lai Port",
+      "type": "port",
+      "lat": 10.76,
+      "lon": 106.76,
+      "region": "asia",
+      "ets_scope": false,
+      "teu_millions": 5.4
+    },
+    {
+      "id": "hong_kong",
+      "label": "Hong Kong",
+      "type": "city",
+      "lat": 22.32,
+      "lon": 114.17,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "port_hong_kong",
+      "label": "Hong Kong Port (Kwai Tsing)",
+      "type": "port",
+      "lat": 22.33,
+      "lon": 114.12,
+      "region": "asia",
+      "ets_scope": false,
+      "teu_millions": 14.8
+    },
+    {
+      "id": "osaka",
+      "label": "Osaka",
+      "type": "city",
+      "lat": 34.69,
+      "lon": 135.5,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "xian_hub",
+      "label": "Xi'an Rail Hub",
+      "type": "rail_hub",
+      "lat": 34.26,
+      "lon": 108.94,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "shanghai_airport",
+      "label": "Shanghai Pudong (PVG)",
+      "type": "airport",
+      "lat": 31.14,
+      "lon": 121.81,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "singapore_airport",
+      "label": "Changi Airport (SIN)",
+      "type": "airport",
+      "lat": 1.36,
+      "lon": 103.99,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "riyadh",
+      "label": "Riyadh",
+      "type": "city",
+      "lat": 24.71,
+      "lon": 46.67,
+      "region": "middle_east",
+      "ets_scope": false
+    },
+    {
+      "id": "port_jeddah",
+      "label": "King Abdullah Port (Jeddah)",
+      "type": "port",
+      "lat": 22.18,
+      "lon": 39.1,
+      "region": "middle_east",
+      "ets_scope": false,
+      "teu_millions": 7.2
+    },
+    {
+      "id": "dubai_airport",
+      "label": "Dubai Airport (DXB)",
+      "type": "airport",
+      "lat": 25.25,
+      "lon": 55.36,
+      "region": "middle_east",
+      "ets_scope": false
+    },
+    {
+      "id": "johannesburg",
+      "label": "Johannesburg",
+      "type": "city",
+      "lat": -26.2,
+      "lon": 28.04,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "port_durban",
+      "label": "Port of Durban",
+      "type": "port",
+      "lat": -29.87,
+      "lon": 31.05,
+      "region": "africa",
+      "ets_scope": false,
+      "teu_millions": 2.7
+    },
+    {
+      "id": "lagos",
+      "label": "Lagos",
+      "type": "city",
+      "lat": 6.52,
+      "lon": 3.38,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "port_lagos",
+      "label": "Apapa Port (Lagos)",
+      "type": "port",
+      "lat": 6.44,
+      "lon": 3.36,
+      "region": "africa",
+      "ets_scope": false,
+      "teu_millions": 1.2
+    },
+    {
+      "id": "port_tangier",
+      "label": "Tanger Med Port",
+      "type": "port",
+      "lat": 35.89,
+      "lon": -5.5,
+      "region": "africa",
+      "ets_scope": false,
+      "teu_millions": 7.2
+    },
+    {
+      "id": "port_mombasa",
+      "label": "Port of Mombasa",
+      "type": "port",
+      "lat": -4.04,
+      "lon": 39.67,
+      "region": "africa",
+      "ets_scope": false,
+      "teu_millions": 1.4
+    },
+    {
+      "id": "buenos_aires",
+      "label": "Buenos Aires",
+      "type": "city",
+      "lat": -34.6,
+      "lon": -58.38,
+      "region": "south_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_buenos_aires",
+      "label": "Port of Buenos Aires",
+      "type": "port",
+      "lat": -34.6,
+      "lon": -58.37,
+      "region": "south_america",
+      "ets_scope": false,
+      "teu_millions": 1.5
+    },
+    {
+      "id": "lima",
+      "label": "Lima",
+      "type": "city",
+      "lat": -12.05,
+      "lon": -77.04,
+      "region": "south_america",
+      "ets_scope": false
+    },
+    {
+      "id": "melbourne",
+      "label": "Melbourne",
+      "type": "city",
+      "lat": -37.81,
+      "lon": 144.96,
+      "region": "oceania",
+      "ets_scope": false
+    },
+    {
+      "id": "port_melbourne",
+      "label": "Port of Melbourne",
+      "type": "port",
+      "lat": -37.82,
+      "lon": 144.91,
+      "region": "oceania",
+      "ets_scope": false,
+      "teu_millions": 3.1
+    },
+    {
+      "id": "seattle",
+      "label": "Seattle",
+      "type": "city",
+      "lat": 47.61,
+      "lon": -122.33,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_seattle",
+      "label": "Port of Seattle/Tacoma",
+      "type": "port",
+      "lat": 47.58,
+      "lon": -122.35,
+      "region": "north_america",
+      "ets_scope": false,
+      "teu_millions": 3.7
+    },
+    {
+      "id": "toronto",
+      "label": "Toronto",
+      "type": "city",
+      "lat": 43.65,
+      "lon": -79.38,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "montreal",
+      "label": "Montreal",
+      "type": "city",
+      "lat": 45.5,
+      "lon": -73.57,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_montreal",
+      "label": "Port of Montreal",
+      "type": "port",
+      "lat": 45.55,
+      "lon": -73.52,
+      "region": "north_america",
+      "ets_scope": false,
+      "teu_millions": 1.7
+    },
+    {
+      "id": "mexico_city",
+      "label": "Mexico City",
+      "type": "city",
+      "lat": 19.43,
+      "lon": -99.13,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_manzanillo",
+      "label": "Port of Manzanillo",
+      "type": "port",
+      "lat": 19.05,
+      "lon": -104.32,
+      "region": "north_america",
+      "ets_scope": false,
+      "teu_millions": 3.3
+    },
+    {
+      "id": "jfk_airport",
+      "label": "JFK Airport (JFK)",
+      "type": "airport",
+      "lat": 40.64,
+      "lon": -73.78,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "lax_airport",
+      "label": "LAX Airport (LAX)",
+      "type": "airport",
+      "lat": 33.94,
+      "lon": -118.41,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "atlanta_warehouse",
+      "label": "Atlanta Distribution Center",
+      "type": "warehouse",
+      "lat": 33.65,
+      "lon": -84.44,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "kansas_city_hub",
+      "label": "Kansas City Intermodal",
+      "type": "rail_hub",
+      "lat": 39.1,
+      "lon": -94.58,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "warsaw",
+      "label": "Warsaw",
+      "type": "city",
+      "lat": 52.23,
+      "lon": 21.01,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "port_gdansk",
+      "label": "Port of Gdansk",
+      "type": "port",
+      "lat": 54.35,
+      "lon": 18.66,
+      "region": "europe",
+      "ets_scope": true,
+      "teu_millions": 2.1
+    },
+    {
+      "id": "port_le_havre",
+      "label": "Port of Le Havre",
+      "type": "port",
+      "lat": 49.49,
+      "lon": 0.12,
+      "region": "europe",
+      "ets_scope": true,
+      "teu_millions": 2.9
+    },
+    {
+      "id": "gothenburg",
+      "label": "Gothenburg",
+      "type": "city",
+      "lat": 57.71,
+      "lon": 11.97,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "port_gothenburg",
+      "label": "Port of Gothenburg",
+      "type": "port",
+      "lat": 57.68,
+      "lon": 11.94,
+      "region": "europe",
+      "ets_scope": true,
+      "teu_millions": 0.9
+    },
+    {
+      "id": "athens",
+      "label": "Athens",
+      "type": "city",
+      "lat": 37.98,
+      "lon": 23.73,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "heathrow_airport",
+      "label": "Heathrow Airport (LHR)",
+      "type": "airport",
+      "lat": 51.47,
+      "lon": -0.46,
+      "region": "europe",
+      "ets_scope": false
+    },
+    {
+      "id": "cdg_airport",
+      "label": "CDG Airport (CDG)",
+      "type": "airport",
+      "lat": 49.01,
+      "lon": 2.55,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "milan_warehouse",
+      "label": "Milan Distribution Center",
+      "type": "warehouse",
+      "lat": 45.43,
+      "lon": 9.28,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "lyon_hub",
+      "label": "Lyon Rail Hub",
+      "type": "rail_hub",
+      "lat": 45.76,
+      "lon": 4.84,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "port_valencia",
+      "label": "Port of Valencia",
+      "type": "port",
+      "lat": 39.45,
+      "lon": -0.32,
+      "region": "europe",
+      "ets_scope": true,
+      "teu_millions": 5.6
+    },
+    {
+      "id": "lisbon",
+      "label": "Lisbon",
+      "type": "city",
+      "lat": 38.72,
+      "lon": -9.14,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "port_ningbo",
+      "label": "Port of Ningbo-Zhoushan",
+      "type": "port",
+      "lat": 29.87,
+      "lon": 121.87,
+      "region": "asia",
+      "ets_scope": false,
+      "teu_millions": 33.3
+    },
+    {
+      "id": "port_kaohsiung",
+      "label": "Port of Kaohsiung",
+      "type": "port",
+      "lat": 22.61,
+      "lon": 120.28,
+      "region": "asia",
+      "ets_scope": false,
+      "teu_millions": 10.2
+    },
+    {
+      "id": "jakarta",
+      "label": "Jakarta",
+      "type": "city",
+      "lat": -6.21,
+      "lon": 106.85,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "port_tanjung_priok",
+      "label": "Tanjung Priok Port",
+      "type": "port",
+      "lat": -6.1,
+      "lon": 106.87,
+      "region": "asia",
+      "ets_scope": false,
+      "teu_millions": 7.6
+    },
+    {
+      "id": "manila",
+      "label": "Manila",
+      "type": "city",
+      "lat": 14.6,
+      "lon": 120.98,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "port_manila",
+      "label": "Port of Manila",
+      "type": "port",
+      "lat": 14.59,
+      "lon": 120.97,
+      "region": "asia",
+      "ets_scope": false,
+      "teu_millions": 5.0
+    },
+    {
+      "id": "port_colombo",
+      "label": "Port of Colombo",
+      "type": "port",
+      "lat": 6.94,
+      "lon": 79.85,
+      "region": "asia",
+      "ets_scope": false,
+      "teu_millions": 7.2
+    },
+    {
+      "id": "seoul",
+      "label": "Seoul",
+      "type": "city",
+      "lat": 37.57,
+      "lon": 126.98,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "delhi",
+      "label": "Delhi",
+      "type": "city",
+      "lat": 28.61,
+      "lon": 77.21,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "chennai",
+      "label": "Chennai",
+      "type": "city",
+      "lat": 13.08,
+      "lon": 80.27,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "port_chennai",
+      "label": "Port of Chennai",
+      "type": "port",
+      "lat": 13.1,
+      "lon": 80.29,
+      "region": "asia",
+      "ets_scope": false,
+      "teu_millions": 1.5
+    },
+    {
+      "id": "tokyo_airport",
+      "label": "Haneda Airport (HND)",
+      "type": "airport",
+      "lat": 35.55,
+      "lon": 139.78,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "hong_kong_airport",
+      "label": "Hong Kong Airport (HKG)",
+      "type": "airport",
+      "lat": 22.31,
+      "lon": 113.92,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "shenzhen_warehouse",
+      "label": "Shenzhen Distribution Center",
+      "type": "warehouse",
+      "lat": 22.6,
+      "lon": 114.1,
+      "region": "asia",
+      "ets_scope": false
+    },
+    {
+      "id": "doha",
+      "label": "Doha",
+      "type": "city",
+      "lat": 25.29,
+      "lon": 51.53,
+      "region": "middle_east",
+      "ets_scope": false
+    },
+    {
+      "id": "port_hamad",
+      "label": "Hamad Port (Doha)",
+      "type": "port",
+      "lat": 25.29,
+      "lon": 51.56,
+      "region": "middle_east",
+      "ets_scope": false,
+      "teu_millions": 2.3
+    },
+    {
+      "id": "cairo",
+      "label": "Cairo",
+      "type": "city",
+      "lat": 30.04,
+      "lon": 31.24,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "port_said",
+      "label": "Port Said (Suez Gateway)",
+      "type": "port",
+      "lat": 31.26,
+      "lon": 32.3,
+      "region": "africa",
+      "ets_scope": false,
+      "teu_millions": 3.8
+    },
+    {
+      "id": "nairobi",
+      "label": "Nairobi",
+      "type": "city",
+      "lat": -1.29,
+      "lon": 36.82,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "casablanca",
+      "label": "Casablanca",
+      "type": "city",
+      "lat": 33.57,
+      "lon": -7.59,
+      "region": "africa",
+      "ets_scope": false
+    },
+    {
+      "id": "port_casablanca",
+      "label": "Port of Casablanca",
+      "type": "port",
+      "lat": 33.6,
+      "lon": -7.62,
+      "region": "africa",
+      "ets_scope": false,
+      "teu_millions": 1.3
+    },
+    {
+      "id": "santiago",
+      "label": "Santiago",
+      "type": "city",
+      "lat": -33.45,
+      "lon": -70.67,
+      "region": "south_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_valparaiso",
+      "label": "Port of Valparaiso",
+      "type": "port",
+      "lat": -33.04,
+      "lon": -71.63,
+      "region": "south_america",
+      "ets_scope": false,
+      "teu_millions": 1.0
+    },
+    {
+      "id": "bogota",
+      "label": "Bogota",
+      "type": "city",
+      "lat": 4.71,
+      "lon": -74.07,
+      "region": "south_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_cartagena",
+      "label": "Port of Cartagena",
+      "type": "port",
+      "lat": 10.4,
+      "lon": -75.53,
+      "region": "south_america",
+      "ets_scope": false,
+      "teu_millions": 3.6
+    },
+    {
+      "id": "port_callao",
+      "label": "Port of Callao",
+      "type": "port",
+      "lat": -12.05,
+      "lon": -77.12,
+      "region": "south_america",
+      "ets_scope": false,
+      "teu_millions": 2.5
+    },
+    {
+      "id": "auckland",
+      "label": "Auckland",
+      "type": "city",
+      "lat": -36.85,
+      "lon": 174.76,
+      "region": "oceania",
+      "ets_scope": false
+    },
+    {
+      "id": "port_auckland",
+      "label": "Port of Auckland",
+      "type": "port",
+      "lat": -36.84,
+      "lon": 174.78,
+      "region": "oceania",
+      "ets_scope": false,
+      "teu_millions": 0.9
+    },
+    {
+      "id": "brisbane",
+      "label": "Brisbane",
+      "type": "city",
+      "lat": -27.47,
+      "lon": 153.03,
+      "region": "oceania",
+      "ets_scope": false
+    },
+    {
+      "id": "port_brisbane",
+      "label": "Port of Brisbane",
+      "type": "port",
+      "lat": -27.38,
+      "lon": 153.17,
+      "region": "oceania",
+      "ets_scope": false,
+      "teu_millions": 1.4
+    },
+    {
+      "id": "tempe",
+      "label": "Tempe, AZ",
+      "type": "city",
+      "lat": 33.43,
+      "lon": -111.94,
+      "region": "north_america",
+      "ets_scope": false
+    },
+    {
+      "id": "guayaquil",
+      "label": "Guayaquil",
+      "type": "city",
+      "lat": -2.17,
+      "lon": -79.92,
+      "region": "south_america",
+      "ets_scope": false
+    },
+    {
+      "id": "port_guayaquil",
+      "label": "Port of Guayaquil",
+      "type": "port",
+      "lat": -2.22,
+      "lon": -79.91,
+      "region": "south_america",
+      "ets_scope": false,
+      "teu_millions": 2.1
+    },
+    {
+      "id": "sofia",
+      "label": "Sofia",
+      "type": "city",
+      "lat": 42.7,
+      "lon": 23.32,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "maastricht",
+      "label": "Maastricht",
+      "type": "city",
+      "lat": 50.85,
+      "lon": 5.69,
+      "region": "europe",
+      "ets_scope": true
+    },
+    {
+      "id": "port_qingdao",
+      "label": "Port of Qingdao",
+      "type": "port",
+      "lat": 36.07,
+      "lon": 120.38,
+      "region": "asia",
+      "ets_scope": "none",
+      "teu_millions": 24.4
+    },
+    {
+      "id": "port_guangzhou",
+      "label": "Port of Guangzhou",
+      "type": "port",
+      "lat": 22.94,
+      "lon": 113.58,
+      "region": "asia",
+      "ets_scope": "none",
+      "teu_millions": 24.2
+    },
+    {
+      "id": "port_tianjin",
+      "label": "Port of Tianjin",
+      "type": "port",
+      "lat": 38.97,
+      "lon": 117.73,
+      "region": "asia",
+      "ets_scope": "none",
+      "teu_millions": 21.0
+    },
+    {
+      "id": "port_xiamen",
+      "label": "Port of Xiamen",
+      "type": "port",
+      "lat": 24.48,
+      "lon": 118.08,
+      "region": "asia",
+      "ets_scope": "none",
+      "teu_millions": 12.0
+    },
+    {
+      "id": "port_tanjung_pelepas",
+      "label": "Port of Tanjung Pelepas",
+      "type": "port",
+      "lat": 1.36,
+      "lon": 103.55,
+      "region": "asia",
+      "ets_scope": "none",
+      "teu_millions": 11.2
+    },
+    {
+      "id": "port_mundra",
+      "label": "Port of Mundra",
+      "type": "port",
+      "lat": 22.73,
+      "lon": 69.72,
+      "region": "asia",
+      "ets_scope": "none",
+      "teu_millions": 7.0
+    },
+    {
+      "id": "port_klang",
+      "label": "Port Klang",
+      "type": "port",
+      "lat": 3.0,
+      "lon": 101.39,
+      "region": "asia",
+      "ets_scope": "none",
+      "teu_millions": 13.7
+    },
+    {
+      "id": "port_yokohama",
+      "label": "Port of Yokohama",
+      "type": "port",
+      "lat": 35.44,
+      "lon": 139.64,
+      "region": "asia",
+      "ets_scope": "none",
+      "teu_millions": 2.8
+    },
+    {
+      "id": "port_kobe",
+      "label": "Port of Kobe",
+      "type": "port",
+      "lat": 34.68,
+      "lon": 135.19,
+      "region": "asia",
+      "ets_scope": "none",
+      "teu_millions": 2.9
+    },
+    {
+      "id": "port_algeciras",
+      "label": "Port of Algeciras",
+      "type": "port",
+      "lat": 36.13,
+      "lon": -5.44,
+      "region": "europe",
+      "ets_scope": "eu_ets",
+      "teu_millions": 5.1
+    },
+    {
+      "id": "port_gioia_tauro",
+      "label": "Port of Gioia Tauro",
+      "type": "port",
+      "lat": 38.43,
+      "lon": 15.9,
+      "region": "europe",
+      "ets_scope": "eu_ets",
+      "teu_millions": 3.1
+    },
+    {
+      "id": "port_bremerhaven",
+      "label": "Port of Bremerhaven",
+      "type": "port",
+      "lat": 53.54,
+      "lon": 8.58,
+      "region": "europe",
+      "ets_scope": "eu_ets",
+      "teu_millions": 5.0
+    },
+    {
+      "id": "port_dar_es_salaam",
+      "label": "Port of Dar es Salaam",
+      "type": "port",
+      "lat": -6.83,
+      "lon": 39.28,
+      "region": "africa",
+      "ets_scope": "none",
+      "teu_millions": 0.8
+    },
+    {
+      "id": "port_maputo",
+      "label": "Port of Maputo",
+      "type": "port",
+      "lat": -25.97,
+      "lon": 32.58,
+      "region": "africa",
+      "ets_scope": "none",
+      "teu_millions": 0.4
+    },
+    {
+      "id": "port_salalah",
+      "label": "Port of Salalah",
+      "type": "port",
+      "lat": 16.94,
+      "lon": 54.0,
+      "region": "middle_east",
+      "ets_scope": "none",
+      "teu_millions": 3.7
+    },
+    {
+      "id": "port_khalifa",
+      "label": "Port of Khalifa (Abu Dhabi)",
+      "type": "port",
+      "lat": 24.81,
+      "lon": 54.6,
+      "region": "middle_east",
+      "ets_scope": "none",
+      "teu_millions": 2.0
+    },
+    {
+      "id": "port_chittagong",
+      "label": "Port of Chittagong",
+      "type": "port",
+      "lat": 22.31,
+      "lon": 91.8,
+      "region": "asia",
+      "ets_scope": "none",
+      "teu_millions": 3.1
+    },
+    {
+      "id": "port_colombo_south",
+      "label": "South Asia Gateway Terminal",
+      "type": "port",
+      "lat": 6.94,
+      "lon": 79.85,
+      "region": "asia",
+      "ets_scope": "none",
+      "teu_millions": 7.2
+    },
+    {
+      "id": "port_djibouti",
+      "label": "Port of Djibouti",
+      "type": "port",
+      "lat": 11.59,
+      "lon": 43.14,
+      "region": "africa",
+      "ets_scope": "none",
+      "teu_millions": 1.0
+    },
+    {
+      "id": "port_abidjan",
+      "label": "Port of Abidjan",
+      "type": "port",
+      "lat": 5.3,
+      "lon": -4.02,
+      "region": "africa",
+      "ets_scope": "none",
+      "teu_millions": 0.9
+    },
+    {
+      "id": "port_cotonou",
+      "label": "Port of Cotonou",
+      "type": "port",
+      "lat": 6.35,
+      "lon": 2.43,
+      "region": "africa",
+      "ets_scope": "none",
+      "teu_millions": 0.5
+    },
+    {
+      "id": "port_tema",
+      "label": "Port of Tema",
+      "type": "port",
+      "lat": 5.62,
+      "lon": -0.02,
+      "region": "africa",
+      "ets_scope": "none",
+      "teu_millions": 1.0
+    },
+    {
+      "id": "port_jebel_ali",
+      "label": "Port of Jebel Ali",
+      "type": "port",
+      "lat": 25.01,
+      "lon": 55.06,
+      "region": "middle_east",
+      "ets_scope": "none",
+      "teu_millions": 14.8
+    },
+    {
+      "id": "port_long_beach",
+      "label": "Port of Long Beach",
+      "type": "port",
+      "lat": 33.75,
+      "lon": -118.19,
+      "region": "north_america",
+      "ets_scope": "none",
+      "teu_millions": 9.6
+    },
+    {
+      "id": "port_new_orleans",
+      "label": "Port of New Orleans",
+      "type": "port",
+      "lat": 29.93,
+      "lon": -90.03,
+      "region": "north_america",
+      "ets_scope": "none",
+      "teu_millions": 0.6
+    },
+    {
+      "id": "port_charleston",
+      "label": "Port of Charleston",
+      "type": "port",
+      "lat": 32.78,
+      "lon": -79.93,
+      "region": "north_america",
+      "ets_scope": "none",
+      "teu_millions": 2.6
+    },
+    {
+      "id": "port_oakland",
+      "label": "Port of Oakland",
+      "type": "port",
+      "lat": 37.8,
+      "lon": -122.3,
+      "region": "north_america",
+      "ets_scope": "none",
+      "teu_millions": 2.5
+    },
+    {
+      "id": "port_tacoma",
+      "label": "Port of Tacoma",
+      "type": "port",
+      "lat": 47.27,
+      "lon": -122.41,
+      "region": "north_america",
+      "ets_scope": "none",
+      "teu_millions": 3.5
+    },
+    {
+      "id": "incheon_airport",
+      "label": "Incheon Int'l Airport (ICN)",
+      "type": "airport",
+      "lat": 37.46,
+      "lon": 126.44,
+      "region": "asia",
+      "ets_scope": "corsia"
+    },
+    {
+      "id": "al_maktoum_airport",
+      "label": "Al Maktoum Int'l Airport (DWC)",
+      "type": "airport",
+      "lat": 24.9,
+      "lon": 55.16,
+      "region": "middle_east",
+      "ets_scope": "corsia"
+    },
+    {
+      "id": "doha_airport",
+      "label": "Hamad Int'l Airport (DOH)",
+      "type": "airport",
+      "lat": 25.27,
+      "lon": 51.61,
+      "region": "middle_east",
+      "ets_scope": "corsia"
+    },
+    {
+      "id": "louisville_airport",
+      "label": "Louisville Airport (SDF/UPS Hub)",
+      "type": "airport",
+      "lat": 38.17,
+      "lon": -85.74,
+      "region": "north_america",
+      "ets_scope": "corsia"
+    },
+    {
+      "id": "ohare_airport",
+      "label": "O'Hare Int'l Airport (ORD)",
+      "type": "airport",
+      "lat": 41.98,
+      "lon": -87.9,
+      "region": "north_america",
+      "ets_scope": "corsia"
+    },
+    {
+      "id": "anchorage_airport",
+      "label": "Ted Stevens Anchorage (ANC)",
+      "type": "airport",
+      "lat": 61.17,
+      "lon": -150.0,
+      "region": "north_america",
+      "ets_scope": "corsia"
+    },
+    {
+      "id": "mumbai_airport",
+      "label": "Chhatrapati Shivaji Airport (BOM)",
+      "type": "airport",
+      "lat": 19.09,
+      "lon": 72.87,
+      "region": "asia",
+      "ets_scope": "corsia"
+    },
+    {
+      "id": "narita_airport",
+      "label": "Narita Int'l Airport (NRT)",
+      "type": "airport",
+      "lat": 35.77,
+      "lon": 140.39,
+      "region": "asia",
+      "ets_scope": "corsia"
+    },
+    {
+      "id": "changi_airport",
+      "label": "Changi Airport (SIN)",
+      "type": "airport",
+      "lat": 1.36,
+      "lon": 103.99,
+      "region": "asia",
+      "ets_scope": "corsia"
+    },
+    {
+      "id": "miami_airport",
+      "label": "Miami Int'l Airport (MIA)",
+      "type": "airport",
+      "lat": 25.8,
+      "lon": -80.29,
+      "region": "north_america",
+      "ets_scope": "corsia"
+    },
+    {
+      "id": "schiphol_airport",
+      "label": "Amsterdam Schiphol (AMS)",
+      "type": "airport",
+      "lat": 52.31,
+      "lon": 4.77,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "atlanta_airport",
+      "label": "Hartsfield-Jackson Atlanta (ATL)",
+      "type": "airport",
+      "lat": 33.64,
+      "lon": -84.43,
+      "region": "north_america",
+      "ets_scope": "corsia"
+    },
+    {
+      "id": "guangzhou_airport",
+      "label": "Guangzhou Baiyun Airport (CAN)",
+      "type": "airport",
+      "lat": 23.39,
+      "lon": 113.3,
+      "region": "asia",
+      "ets_scope": "corsia"
+    },
+    {
+      "id": "taipei_airport",
+      "label": "Taiwan Taoyuan Airport (TPE)",
+      "type": "airport",
+      "lat": 25.08,
+      "lon": 121.23,
+      "region": "asia",
+      "ets_scope": "corsia"
+    },
+    {
+      "id": "istanbul_airport",
+      "label": "Istanbul Airport (IST)",
+      "type": "airport",
+      "lat": 41.26,
+      "lon": 28.74,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "sao_paulo_airport",
+      "label": "Guarulhos Airport (GRU)",
+      "type": "airport",
+      "lat": -23.43,
+      "lon": -46.47,
+      "region": "south_america",
+      "ets_scope": "corsia"
+    },
+    {
+      "id": "houston",
+      "label": "Houston, TX",
+      "type": "city",
+      "lat": 29.76,
+      "lon": -95.37,
+      "region": "north_america",
+      "ets_scope": "none"
+    },
+    {
+      "id": "san_francisco",
+      "label": "San Francisco, CA",
+      "type": "city",
+      "lat": 37.77,
+      "lon": -122.42,
+      "region": "north_america",
+      "ets_scope": "none"
+    },
+    {
+      "id": "denver",
+      "label": "Denver, CO",
+      "type": "city",
+      "lat": 39.74,
+      "lon": -104.99,
+      "region": "north_america",
+      "ets_scope": "none"
+    },
+    {
+      "id": "philadelphia",
+      "label": "Philadelphia, PA",
+      "type": "city",
+      "lat": 39.95,
+      "lon": -75.17,
+      "region": "north_america",
+      "ets_scope": "none"
+    },
+    {
+      "id": "marseille",
+      "label": "Marseille, France",
+      "type": "city",
+      "lat": 43.3,
+      "lon": 5.37,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "munich",
+      "label": "Munich, Germany",
+      "type": "city",
+      "lat": 48.14,
+      "lon": 11.58,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "zurich",
+      "label": "Zurich, Switzerland",
+      "type": "city",
+      "lat": 47.38,
+      "lon": 8.54,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "taipei",
+      "label": "Taipei, Taiwan",
+      "type": "city",
+      "lat": 25.03,
+      "lon": 121.57,
+      "region": "asia",
+      "ets_scope": "none"
+    },
+    {
+      "id": "kuala_lumpur",
+      "label": "Kuala Lumpur, Malaysia",
+      "type": "city",
+      "lat": 3.14,
+      "lon": 101.69,
+      "region": "asia",
+      "ets_scope": "none"
+    },
+    {
+      "id": "dhaka",
+      "label": "Dhaka, Bangladesh",
+      "type": "city",
+      "lat": 23.81,
+      "lon": 90.41,
+      "region": "asia",
+      "ets_scope": "none"
+    },
+    {
+      "id": "karachi",
+      "label": "Karachi, Pakistan",
+      "type": "city",
+      "lat": 24.86,
+      "lon": 67.01,
+      "region": "asia",
+      "ets_scope": "none"
+    },
+    {
+      "id": "muscat",
+      "label": "Muscat, Oman",
+      "type": "city",
+      "lat": 23.59,
+      "lon": 58.54,
+      "region": "middle_east",
+      "ets_scope": "none"
+    },
+    {
+      "id": "addis_ababa",
+      "label": "Addis Ababa, Ethiopia",
+      "type": "city",
+      "lat": 9.02,
+      "lon": 38.75,
+      "region": "africa",
+      "ets_scope": "none"
+    },
+    {
+      "id": "cape_town",
+      "label": "Cape Town, South Africa",
+      "type": "city",
+      "lat": -33.92,
+      "lon": 18.42,
+      "region": "africa",
+      "ets_scope": "none"
+    },
+    {
+      "id": "accra",
+      "label": "Accra, Ghana",
+      "type": "city",
+      "lat": 5.56,
+      "lon": -0.19,
+      "region": "africa",
+      "ets_scope": "none"
+    },
+    {
+      "id": "panama_city",
+      "label": "Panama City, Panama",
+      "type": "city",
+      "lat": 8.98,
+      "lon": -79.52,
+      "region": "south_america",
+      "ets_scope": "none"
+    },
+    {
+      "id": "havana",
+      "label": "Havana, Cuba",
+      "type": "city",
+      "lat": 23.11,
+      "lon": -82.37,
+      "region": "south_america",
+      "ets_scope": "none"
+    },
+    {
+      "id": "hanoi",
+      "label": "Hanoi, Vietnam",
+      "type": "city",
+      "lat": 21.03,
+      "lon": 105.85,
+      "region": "asia",
+      "ets_scope": "none"
+    },
+    {
+      "id": "yangon",
+      "label": "Yangon, Myanmar",
+      "type": "city",
+      "lat": 16.87,
+      "lon": 96.2,
+      "region": "asia",
+      "ets_scope": "none"
+    },
+    {
+      "id": "colombo",
+      "label": "Colombo, Sri Lanka",
+      "type": "city",
+      "lat": 6.93,
+      "lon": 79.84,
+      "region": "asia",
+      "ets_scope": "none"
+    },
+    {
+      "id": "tehran",
+      "label": "Tehran, Iran",
+      "type": "city",
+      "lat": 35.69,
+      "lon": 51.39,
+      "region": "middle_east",
+      "ets_scope": "none"
+    },
+    {
+      "id": "jeddah",
+      "label": "Jeddah, Saudi Arabia",
+      "type": "city",
+      "lat": 21.49,
+      "lon": 39.19,
+      "region": "middle_east",
+      "ets_scope": "none"
+    },
+    {
+      "id": "barcelona",
+      "label": "Barcelona, Spain",
+      "type": "city",
+      "lat": 41.39,
+      "lon": 2.17,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "hamburg",
+      "label": "Hamburg, Germany",
+      "type": "city",
+      "lat": 53.55,
+      "lon": 10.0,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "antwerp",
+      "label": "Antwerp, Belgium",
+      "type": "city",
+      "lat": 51.22,
+      "lon": 4.4,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "porto",
+      "label": "Porto, Portugal",
+      "type": "city",
+      "lat": 41.16,
+      "lon": -8.63,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "dublin",
+      "label": "Dublin, Ireland",
+      "type": "city",
+      "lat": 53.35,
+      "lon": -6.26,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "helsinki",
+      "label": "Helsinki, Finland",
+      "type": "city",
+      "lat": 60.17,
+      "lon": 24.94,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "bucharest",
+      "label": "Bucharest, Romania",
+      "type": "city",
+      "lat": 44.43,
+      "lon": 26.1,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "bratislava",
+      "label": "Bratislava, Slovakia",
+      "type": "city",
+      "lat": 48.15,
+      "lon": 17.11,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "memphis_hub",
+      "label": "Memphis Intermodal Hub",
+      "type": "rail_hub",
+      "lat": 35.15,
+      "lon": -90.05,
+      "region": "north_america",
+      "ets_scope": "none"
+    },
+    {
+      "id": "chengdu_hub",
+      "label": "Chengdu Rail Hub",
+      "type": "rail_hub",
+      "lat": 30.57,
+      "lon": 104.07,
+      "region": "asia",
+      "ets_scope": "none"
+    },
+    {
+      "id": "moscow_hub",
+      "label": "Moscow Rail Hub",
+      "type": "rail_hub",
+      "lat": 55.76,
+      "lon": 37.62,
+      "region": "europe",
+      "ets_scope": "none"
+    },
+    {
+      "id": "hamburg_hub",
+      "label": "Hamburg Rail Hub",
+      "type": "rail_hub",
+      "lat": 53.55,
+      "lon": 10.0,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "louisville_warehouse",
+      "label": "Louisville DC (UPS)",
+      "type": "warehouse",
+      "lat": 38.19,
+      "lon": -85.68,
+      "region": "north_america",
+      "ets_scope": "none"
+    },
+    {
+      "id": "singapore_warehouse",
+      "label": "Singapore Logistics Park",
+      "type": "warehouse",
+      "lat": 1.33,
+      "lon": 103.72,
+      "region": "asia",
+      "ets_scope": "none"
+    },
+    {
+      "id": "dubai_warehouse",
+      "label": "Dubai Logistics City",
+      "type": "warehouse",
+      "lat": 24.92,
+      "lon": 55.16,
+      "region": "middle_east",
+      "ets_scope": "none"
+    },
+    {
+      "id": "amsterdam",
+      "label": "Amsterdam, Netherlands",
+      "type": "city",
+      "lat": 52.37,
+      "lon": 4.9,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    },
+    {
+      "id": "budapest",
+      "label": "Budapest, Hungary",
+      "type": "city",
+      "lat": 47.5,
+      "lon": 19.04,
+      "region": "europe",
+      "ets_scope": "eu_ets"
+    }
   ]
 }
