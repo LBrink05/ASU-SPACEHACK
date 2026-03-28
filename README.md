@@ -36,7 +36,6 @@
 ## Running Application
 
 ```bash
-python -m venv env
 source env/bin/activate
 pip install -r requirements
 python app.py
